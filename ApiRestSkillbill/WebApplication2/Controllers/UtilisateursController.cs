@@ -4,15 +4,18 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using WebApplication2.DataProviders;
+using WebApplication2.Entites;
 
 namespace WebApplication2.Controllers
 {
-    public class ValuesController : ApiController
+    public class UtilisateursController : ApiController
     {
         // GET api/values
-        public IEnumerable<string> Get()
+        public List<Utilisateur> Get()
         {
-            return new string[] { "value1", "value2" };
+            UtilisateurDataProvider utilisateurDataProvider = new UtilisateurDataProvider();
+            return utilisateurDataProvider.TrouverTous();
         }
 
         // GET api/values/5
