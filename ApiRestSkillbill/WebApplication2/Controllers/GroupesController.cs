@@ -6,11 +6,16 @@ namespace WebApplication2.Controllers
     public class GroupesController : ApiController
     {
         
-        public bool Put([FromUri]int idGroupe, [FromUri] int  idUtilisateur)
+        public bool Post([FromUri]int id, [FromUri] int  idUtilisateur)
         {
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-            return groupeDataProvider.AjouterMembre(idUtilisateur, idGroupe);
+            return groupeDataProvider.AjouterMembre(idUtilisateur, id);
         }
-        
+
+        public bool Put(int id, string nom)
+        {
+            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+            return groupeDataProvider.ModifierNom(id, nom);
+        }
     }
 }

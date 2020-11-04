@@ -2,3 +2,10 @@
 
 POST https://localhost:44301/api/utilisateurs/6/groupes?monnaie=0&nom=testegdfgf
 Content-Type: application/xml
+
+
+###
+POST https://localhost:44301/api/utilisateurs/6/groupes?nom=nouveau&monnaie=0
+
+###
+PUT https://localhost:44301/api/groupes/6?nom=changed
