@@ -11,7 +11,7 @@ namespace WebApplication2.DataProviders
     public class UtilisateurDataProvider
     {
 
-        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private readonly string CONNECTION_STRING = "Server=tcp:jdetest.database.windows.net,1433;Initial Catalog=jdeTest;Persist Security Info=False;User ID=jdetest;Password=Test@JDE.com;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
@@ -81,9 +81,40 @@ namespace WebApplication2.DataProviders
             dataReader.Close();
             con.Close();
 
-            
+       
 
             return utilisateurs;
+        }
+
+        public bool CreerUtilisateur(string nom, string courriel, string motDePasse)
+        {
+            SqlConnection con= new SqlConnection(CONNECTION_STRING);
+            SqlCommand cmd = new SqlCommand("dbo.INSERT_utilisateur", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@Nom", nom);
+            cmd.Parameters.AddWithValue("@Courriel", courriel);
+            cmd.Parameters.AddWithValue("@MotPasse", motDePasse);
+
+            con.Open();
+            try
+            {
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected == 1)
+                {
+                    return true;
+                }
+            }
+            catch (SqlException)
+            {
+                return false;
+            }
+
+
+                
+
+            return false;
+           
         }
     }
 }
