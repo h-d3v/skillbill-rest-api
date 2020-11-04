@@ -8,7 +8,7 @@ namespace WebApplication2.Entites
         public int UtilisateurCreateurId { get; set; }
         public string DateCreation { get; set; }
         public List<Photo> Photos;
-        public Dictionary<Utilisateur, float> PayeursEtMontant;
+        public List<UtilisateurPayeur> PayeursEtMontant;
         public float MontantTotal { get; set; }
         public string Nom { get; set; }
 
@@ -31,5 +31,8 @@ namespace WebApplication2.Entites
         {
             return Id;
         }
+
+    
     }
+    
 }

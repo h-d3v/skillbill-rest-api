@@ -21,7 +21,7 @@ namespace WebApplication2.DataProviders
                 SqlTransaction transaction = con.BeginTransaction();
                 mySqlCommand.Connection = con;
                 mySqlCommand.Transaction = transaction;
-                mySqlCommand.CommandText = "insert into facture (groupe, utilisateur_createur, date_facture, montant_total, nom) VALUES (@groupe, @utilisateur_createur, @date_facture, @montant_total, @nom); SELECT SCOPE_IDENTITY() ";
+                mySqlCommand.CommandText = "insert into facture (groupe, utilisateur_createur, date_facture, montant_total, nom) VALUES (@groupe, @utilisateur_createur, @date_facture, @montant_total, @nom); SELECT SCOPE_IDENTITY()";
                 mySqlCommand.CommandType = CommandType.Text;
                 mySqlCommand.Parameters.Add(new SqlParameter()
                 {
@@ -30,21 +30,23 @@ namespace WebApplication2.DataProviders
                     Value = facture.IdGroupe
                 });
                 mySqlCommand.Parameters.AddWithValue("utilisateur_createur", facture.UtilisateurCreateurId);
-                mySqlCommand.Parameters.AddWithValue("date_facture", DateTime.TryParse(facture.DateCreation, out DateTime dateTime) );
-                mySqlCommand.Parameters.AddWithValue("utilisateur_createur", facture.MontantTotal);
+                mySqlCommand.Parameters.AddWithValue("date_facture", facture.DateCreation );
+                mySqlCommand.Parameters.AddWithValue("montant_total", facture.MontantTotal);
                 mySqlCommand.Parameters.AddWithValue("nom", facture.Nom);
 
-                int i = Convert.ToInt32( mySqlCommand.ExecuteScalar());
+                
+                var i = Convert.ToInt32( mySqlCommand.ExecuteScalar());
                 if (i >= 1)
                 {
                     int j = 0;
                     
                     foreach (var VARIABLE in facture.PayeursEtMontant)
                     {
-                        mySqlCommand.CommandText = "insert into utilisateur_facture (id_facture, id_utilisateur, montant_paye) VALUES (@id_facture, @id_utilisateur, @montant_paye) ";
-                        mySqlCommand.Parameters.AddWithValue("id_facture", i);
-                        mySqlCommand.Parameters.AddWithValue("id_utilisateur", ((Utilisateur) VARIABLE.Key).Id);
-                        mySqlCommand.Parameters.AddWithValue("montant_paye", VARIABLE.Value);
+                       
+                        mySqlCommand.CommandText = $"insert into utilisateur_facture (id_facture, id_utilisateur, montant_paye) VALUES ({i}, @id_utilisateur{j}, @montant_paye{j}) ";
+                        
+                        mySqlCommand.Parameters.AddWithValue($"id_utilisateur{j}", ( VARIABLE.UtilisateurId));
+                        mySqlCommand.Parameters.AddWithValue($"montant_paye{j}", VARIABLE.MontantPaye);
                         j += mySqlCommand.ExecuteNonQuery();
                         
                     }
@@ -74,7 +76,7 @@ namespace WebApplication2.DataProviders
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();   
-            mySqlCommand.CommandText = "select id, groupe, utilisateur_createur, date_facture, montant_total, nom, id_utilisateur, montant_paye from facture join utilisateur_facture uf on facture.id = uf.id_facture where groupe=@groupe ";
+            mySqlCommand.CommandText = "select id, groupe, utilisateur_createur, date_facture, montant_total, nom, id_utilisateur, montant_paye from facture join utilisateur_facture uf on facture.id = uf.id_facture where groupe=@groupe ORDER BY id_facture";
             mySqlCommand.CommandType = CommandType.Text;
             mySqlCommand.Parameters.AddWithValue("groupe", idGroupe);
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
@@ -88,27 +90,37 @@ namespace WebApplication2.DataProviders
                 }
                 
                 Facture factureLigne = new Facture();
+                
+                if(facture==null) facture=new Facture();
                 factureLigne.Id = (int) dataReader["id"];
-                if (!factureLigne.Equals(facture))
+                if (factureLigne.Id!=facture.Id)
                 {
-                    if (facture != null)
+                    if (facture.Id > 0)
                     {
-                        factures.Add(facture); 
+                        factures.Add(facture);
+                        facture= new Facture();
                     }
+                    
 
-                   
-                    facture = new Facture();
                     facture.Id = (int) dataReader["id"];
                     facture.DateCreation = ((DateTime) dataReader["date_facture"]).ToString();
                     facture.MontantTotal = Convert.ToSingle ( dataReader["montant_total"]);
                     facture.UtilisateurCreateurId = (int) dataReader["utilisateur_createur"];
                     facture.Nom = (string) dataReader["nom"];
-                    facture.PayeursEtMontant = new Dictionary<Utilisateur, float>();
-                    facture.PayeursEtMontant.Add(new Utilisateur(){Id = (int) dataReader["id_utilisateur"]},Convert.ToSingle( dataReader["montant_paye"]));
+                    facture.PayeursEtMontant = new List<UtilisateurPayeur>();
+                    facture.PayeursEtMontant.Add(new UtilisateurPayeur()
+                    {
+                        UtilisateurId = (int) dataReader["id_utilisateur"],
+                        MontantPaye = Convert.ToSingle( dataReader["montant_paye"])
+                    });
                 }
                 else
                 {
-                    facture?.PayeursEtMontant.Add(new Utilisateur(){Id = (int) dataReader["id_utilisateur"]},Convert.ToSingle( dataReader["montant_paye"]));
+                    facture?.PayeursEtMontant.Add(new UtilisateurPayeur()
+                    {
+                        UtilisateurId = (int) dataReader["id_utilisateur"],
+                        MontantPaye = Convert.ToSingle( dataReader["montant_paye"])
+                    });
                 }
                 
             }

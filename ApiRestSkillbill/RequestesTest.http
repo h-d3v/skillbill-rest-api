@@ -18,4 +18,34 @@ Content-Type: application/json
 POST https://localhost:44301/api/groupes/1?idUtilisateur=2
 
 ###
-GET https://localhost:44301/api/utilisateurs/1/groupes/1/factures
+GET https://localhost:44301/api/utilisateurs/1/groupes/2/factures
+
+
+###
+POST https://localhost:44301/api/factures
+Content-Type: application/json
+Accept: application/xml
+
+  {
+    "Photos": null,
+    "PayeursEtMontant": [
+      {
+        "UtilisateurId": 1,
+        "MontantPaye": 24432.3
+      },
+      {
+        "UtilisateurId": 3,
+        "MontantPaye": 4.0
+      },
+      {
+        "UtilisateurId": 4,
+        "MontantPaye": 3344433.0
+      }
+    ],
+    "Id": 1,
+    "UtilisateurCreateurId": 3,
+    "DateCreation": "2020-11-03 00:00:00",
+    "MontantTotal": 2334432.3,
+    "Nom": "3535353",
+    "IdGroupe": 2
+  }
