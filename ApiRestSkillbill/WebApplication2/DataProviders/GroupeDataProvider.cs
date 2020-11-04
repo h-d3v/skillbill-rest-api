@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using WebApplication2.Entites;
 
@@ -93,7 +95,49 @@ namespace WebApplication2.DataProviders
             con.Close();
             return i == 1;
         }
-        
+
+        public Groupe TrouverGroupeParID(int idGroupe)
+        {
+            Groupe groupe = null;
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+            con.Open();
+            SqlCommand mySqlCommand = con.CreateCommand();
+            mySqlCommand.CommandText = "select nom, monnaie, utilisateur_createur, date_creation, id_utilisateur, id_groupe from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe where id=@id  ";
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "id",
+                Value = idGroupe
+            });
+            DbDataReader dataReader = mySqlCommand.ExecuteReader();
+
+
+            while  (dataReader.Read())
+            {
+                if (groupe == null)
+                {
+                    groupe= new Groupe()
+                    {
+                        Id = (int) dataReader["id_groupe"],
+                        Monnaie = (int) dataReader["monnaie"],
+                        UtilisateurCreateur = new Utilisateur(){Id= (int) dataReader["utilisateur_createur"]},
+                        DateCreation = ((DateTime) dataReader["date_creation"]).ToString(),
+                        Nom = (string) dataReader["nom"],
+                        UtilisateursAbonnes = new List<Utilisateur>()
+                        
+                    };
+                }
+                Utilisateur utilisateur = new Utilisateur{Id= (int) dataReader["id_utilisateur"]};
+                groupe.UtilisateursAbonnes.Add(utilisateur);
+                
+            }
+            dataReader.Close();
+            con.Close();
+
+            return groupe;
+        }
+
     }
     
     
