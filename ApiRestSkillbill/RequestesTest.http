@@ -1,0 +1,4 @@
+﻿
+
+POST https://localhost:44301/api/utilisateurs/6/groupes?monnaie=0&nom=testegdfgf
+Content-Type: application/xml

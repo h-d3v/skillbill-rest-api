@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using WebApplication2.Entites;
-using MySqlConnector;
 using System.Data.SqlClient;
 
 namespace WebApplication2.DataProviders
@@ -11,12 +10,11 @@ namespace WebApplication2.DataProviders
     public class UtilisateurDataProvider
     {
 
-        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        
+        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
-            SqlConnection con = new SqlConnection(CONNECTION_STRING);
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
             mySqlCommand.CommandText = "select nom,prenom,courriel,id from Utilisateurs where courriel=@courriel AND mot_de_passe =@motPasse";

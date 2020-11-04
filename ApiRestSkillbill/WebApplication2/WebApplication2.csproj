@@ -189,10 +189,14 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\GroupesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\UtilisateursController.cs" />
+    <Compile Include="DataProviders\GroupeDataProvider.cs" />
     <Compile Include="DataProviders\UtilisateurDataProvider.cs" />
+    <Compile Include="Entites\Facture.cs" />
+    <Compile Include="Entites\Groupe.cs" />
     <Compile Include="Entites\Utilisateur.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

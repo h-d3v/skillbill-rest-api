@@ -19,14 +19,18 @@ namespace WebApplication2.Controllers
         }
 
         // GET api/values/5
+        
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/values
-        public void Post([FromBody] string value)
+        // POST créer un groupe
+        [Route("api/utilisateurs/{id}/groupes")]
+        public bool Post([FromUri] string nom, int id, int monnaie)
         {
+            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+            return groupeDataProvider.CreerGroupe(nom, id, monnaie);
         }
 
         // PUT api/values/5
