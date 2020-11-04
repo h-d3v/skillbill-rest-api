@@ -23,7 +23,7 @@ namespace WebApplication2.Controllers
         public Groupe Get(int id, int idGroupe)
         {
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-            return groupeDataProvider.TrouverGroupeParID(idGroupe);
+            return groupeDataProvider.TrouverGroupeAvecMembresParID(idGroupe);
         }
 
         // POST créer un groupe

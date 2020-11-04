@@ -96,7 +96,7 @@ namespace WebApplication2.DataProviders
             return i == 1;
         }
 
-        public Groupe TrouverGroupeParID(int idGroupe)
+        public Groupe TrouverGroupeAvecMembresParID(int idGroupe)
         {
             Groupe groupe = null;
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);

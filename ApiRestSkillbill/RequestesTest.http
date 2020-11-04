@@ -16,3 +16,6 @@ Content-Type: application/json
 
 ###
 POST https://localhost:44301/api/groupes/1?idUtilisateur=2
+
+###
+GET https://localhost:44301/api/utilisateurs/1/groupes/1/factures

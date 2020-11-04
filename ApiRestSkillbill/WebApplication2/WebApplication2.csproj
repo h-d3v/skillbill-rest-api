@@ -193,10 +193,12 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\UtilisateursController.cs" />
+    <Compile Include="DataProviders\FactureDataProvider.cs" />
     <Compile Include="DataProviders\GroupeDataProvider.cs" />
     <Compile Include="DataProviders\UtilisateurDataProvider.cs" />
     <Compile Include="Entites\Facture.cs" />
     <Compile Include="Entites\Groupe.cs" />
+    <Compile Include="Entites\Photo.cs" />
     <Compile Include="Entites\Utilisateur.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

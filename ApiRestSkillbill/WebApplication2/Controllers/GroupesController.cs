@@ -1,5 +1,7 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Web.Http;
 using WebApplication2.DataProviders;
+using WebApplication2.Entites;
 
 namespace WebApplication2.Controllers
 {
@@ -16,6 +18,13 @@ namespace WebApplication2.Controllers
         {
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
             return groupeDataProvider.ModifierNom(id, nom);
+        }
+
+        [Route("api/utilisateurs/{id}/groupes/{idGroupe}/factures")]
+        public List<Facture> Get(int idGroupe)
+        {
+            FactureDataProvider factureDataProvider = new FactureDataProvider();
+            return factureDataProvider.getFacturesParGroupe(idGroupe);
         }
     }
 }
