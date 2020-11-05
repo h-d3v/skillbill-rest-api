@@ -107,7 +107,7 @@ namespace WebApplication2.DataProviders
                     facture.MontantTotal = Convert.ToSingle ( dataReader["montant_total"]);
                     facture.UtilisateurCreateurId = (int) dataReader["utilisateur_createur"];
                     facture.Nom = (string) dataReader["nom"];
-                    facture.PayeursEtMontant = new List<UtilisateurPayeur>();
+                    facture.PayeursEtMontant = new HashSet<UtilisateurPayeur>();
                     facture.PayeursEtMontant.Add(new UtilisateurPayeur()
                     {
                         UtilisateurId = (int) dataReader["id_utilisateur"],
@@ -134,24 +134,69 @@ namespace WebApplication2.DataProviders
             return factures;
         }
 
-
-     /*   public bool AjouterFactureGroupe(Facture facture)
+        public bool AjouterPhoto(int id, Photo _photo)
         {
+           
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
-            SqlCommand mySqlCommand = con.CreateCommand();   
-            mySqlCommand.CommandText = "insert into facture(groupe, utilisateur_createur, date_facture, montant_total, nom) VALUES (@groupe, @utilisateur_createur, @date_facture, @montant_total, @nom) ";
+            SqlCommand mySqlCommand = con.CreateCommand();
+            mySqlCommand.CommandText = "insert into photo(id_facture, image, url) VALUES (@id,@image,@url)" ;
             mySqlCommand.CommandType = CommandType.Text;
-            mySqlCommand.Parameters.AddWithValue("groupe", facture.IdGroupe);
-            mySqlCommand.Parameters.AddWithValue("utilisateur_createur", facture.UtilisateurCreateur.Id);
-            mySqlCommand.Parameters.AddWithValue("date_facture", DateTime.TryParse(facture.DateCreation, out DateTime dateTime));
-            mySqlCommand.Parameters.AddWithValue("montant_total", facture.MontantTotal);
-            mySqlCommand.Parameters.AddWithValue("nom", facture.Nom);
-            
-            
-            
-            return false;
+            mySqlCommand.Parameters.AddWithValue("id", id);
+            mySqlCommand.Parameters.AddWithValue("url", "non implémenté");
+            Byte[] bytes = Convert.FromBase64String(_photo.LowResEncodeBase64);
+            mySqlCommand.Parameters.Add("image", SqlDbType.VarBinary).Value= bytes;
+            int i = mySqlCommand.ExecuteNonQuery();
+            con.Close();
+
+            return i==1;
         }
-        */
+
+        public Photo TrouverPhotoParId(int id)
+        {
+            Photo photo = null;
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+            con.Open();
+            SqlCommand mySqlCommand = con.CreateCommand();
+            mySqlCommand.CommandText = "select id, id_facture, image, url from photo where id =@id" ;
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.AddWithValue("id", id);
+
+            DbDataReader dataReader = mySqlCommand.ExecuteReader();
+            if (dataReader.Read())
+            {
+                photo = new Photo()
+                {
+                    Id = (int) dataReader["id"],
+                    Uri = (string) dataReader["url"],
+                    IdFacture = (int) dataReader["id_facture"]
+                };
+                byte[] result = null;
+                if (!dataReader.IsDBNull(2))
+                {
+                    long size = dataReader.GetBytes(2, 0, null, 0, 0); //get the length of data 
+                    result = new byte[size];
+                    int bufferSize = 1024;
+                    long bytesRead = 0;
+                    int curPos = 0;
+                    while (bytesRead < size)
+                    {
+                        bytesRead += dataReader.GetBytes(2, curPos, result, curPos, bufferSize);
+                        curPos += bufferSize;
+                    }
+
+                    string str = Convert.ToBase64String(result);
+
+                    photo.LowResEncodeBase64 = Convert.ToBase64String(result);
+                }
+
+
+            }
+
+            return photo;
+
+        }
+        
+
     }
 }
