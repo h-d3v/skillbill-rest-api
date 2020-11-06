@@ -42,7 +42,9 @@ namespace WebApplication2.DataProviders
                 utilisateur = new Utilisateur()
                 {
                     Nom = (String) dataReader["nom"],
-                    Prenom =  (String) dataReader["prenom"],
+                    //ne sert a rien, le prenom n'est pas utilise 
+                    //si on veut l'utiliser on peut faire une fonction qui insert un "" a chaque nouveau utilisateur
+                    //Prenom =  (String) dataReader["prenom"],
                     Courriel =  (String) dataReader["courriel"],
                     Id =  (int) dataReader["id"]
                 };
@@ -86,34 +88,28 @@ namespace WebApplication2.DataProviders
             return utilisateurs;
         }
 
-        public bool CreerUtilisateur(string nom, string courriel, string motDePasse)
+        public Utilisateur CreerUtilisateur(Utilisateur u)
         {
             SqlConnection con= new SqlConnection(CONNECTION_STRING);
             SqlCommand cmd = new SqlCommand("dbo.INSERT_utilisateur", con);
             cmd.CommandType = CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("@Nom", nom);
-            cmd.Parameters.AddWithValue("@Courriel", courriel);
-            cmd.Parameters.AddWithValue("@MotPasse", motDePasse);
+            
+            cmd.Parameters.AddWithValue("@Nom", u.Nom);
+            cmd.Parameters.AddWithValue("@Courriel", u.Courriel);
+            cmd.Parameters.AddWithValue("@MotPasse", u.MotDePasse);
 
             con.Open();
             try
             {
                 int rowsAffected = cmd.ExecuteNonQuery();
-                if (rowsAffected == 1)
-                {
-                    return true;
-                }
+              
             }
             catch (SqlException)
             {
-                return false;
+                return null;
             }
-
-
-                
-
-            return false;
+            con.Close();
+            return SeConnecter(u.Courriel, u.MotDePasse);
            
         }
     }

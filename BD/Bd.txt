@@ -81,7 +81,6 @@ CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @
 
 AS
 
-
 INSERT INTO [Utilisateurs]
            ([nom]
            ,[courriel]
