@@ -18,7 +18,7 @@ namespace WebApplication2.Controllers
             return utilisateurDataProvider.TrouverTous();
         }
 
-        // GET api/values/5
+   
         [Route("api/utilisateurs/{id}/groupes/{idGroupe}")]
         public Groupe Get(int id, int idGroupe)
         {
@@ -26,12 +26,23 @@ namespace WebApplication2.Controllers
             return groupeDataProvider.TrouverGroupeAvecMembresParID(idGroupe);
         }
 
-        // POST créer un groupe
         [Route("api/utilisateurs/{id}/groupes")]
-        public bool Post([FromUri] string nom, int id, int monnaie)
+        public List<Groupe> Get(int id)
         {
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-            return groupeDataProvider.CreerGroupe(nom, id, monnaie);
+            return groupeDataProvider.TrouverGroupesParUtilisateur(id);
+        }
+        
+        
+
+
+
+        // POST créer un groupe
+        [Route("api/utilisateurs/{id}/groupes")]
+        public bool Post([FromUri] int id, [FromBody] Groupe groupe)
+        {
+            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+            return groupeDataProvider.CreerGroupe(groupe.Nom, id, groupe.Monnaie);
         }
 
         // PUT api/values/5

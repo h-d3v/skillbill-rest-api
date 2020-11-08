@@ -114,7 +114,7 @@ namespace WebApplication2.DataProviders
 
 
             while  (dataReader.Read())
-            {
+            { 
                 if (groupe == null)
                 {
                     groupe= new Groupe()
@@ -138,6 +138,42 @@ namespace WebApplication2.DataProviders
             return groupe;
         }
 
+        public List<Groupe> TrouverGroupesParUtilisateur(int id)
+        {
+            List<Groupe> groupes = null;
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+            con.Open();
+            SqlCommand mySqlCommand = con.CreateCommand();
+            mySqlCommand.CommandText = "select id, nom, monnaie, utilisateur_createur, date_creation, id_utilisateur, id_groupe from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe where ug.id_utilisateur=@id order by id" ;
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.AddWithValue("id", id);
+            DbDataReader dataReader = mySqlCommand.ExecuteReader();
+            Groupe groupe = new Groupe();
+            groupe.Id = -1;
+            while (dataReader.Read())
+            {
+                if(groupes==null) groupes = new List<Groupe>();
+                if (groupe.Id != (int) dataReader["id"])
+                {
+                    if(groupe.Id!=-1) groupes.Add(groupe);
+                    
+                    groupe = new Groupe();
+                    groupe.Id = (int) dataReader["id"];
+                    groupe.Nom = (string) dataReader["nom"];
+                    groupe.UtilisateurCreateur = new Utilisateur(){Id = (int) dataReader["utilisateur_createur"]}  ;
+                    groupe.UtilisateursAbonnes= new List<Utilisateur>();
+                    groupe.UtilisateursAbonnes.Add(new Utilisateur(){Id = (int) dataReader["id_utilisateur"]});
+                    
+                }
+                else
+                {
+                    groupe.UtilisateursAbonnes.Add(new Utilisateur(){Id = (int) dataReader["id_utilisateur"]});
+                }
+            }
+            groupes?.Add(groupe);
+
+            return groupes;
+        }
     }
     
     

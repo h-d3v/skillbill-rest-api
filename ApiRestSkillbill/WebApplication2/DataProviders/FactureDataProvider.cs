@@ -9,7 +9,7 @@ namespace WebApplication2.DataProviders
 {
     public class FactureDataProvider
     {
-        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
         public bool EnregistrerFacture(Facture facture)
         {
@@ -140,9 +140,9 @@ namespace WebApplication2.DataProviders
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
-            mySqlCommand.CommandText = "insert into photo(id_facture, image, url) VALUES (@id,@image,@url)" ;
+            mySqlCommand.CommandText = "insert into photo(id_facture, image, url) VALUES (@idf,@image,@url)" ;
             mySqlCommand.CommandType = CommandType.Text;
-            mySqlCommand.Parameters.AddWithValue("id", id);
+            mySqlCommand.Parameters.AddWithValue("idf", id);
             mySqlCommand.Parameters.AddWithValue("url", "non implémenté");
             Byte[] bytes = Convert.FromBase64String(_photo.LowResEncodeBase64);
             mySqlCommand.Parameters.Add("image", SqlDbType.VarBinary).Value= bytes;
@@ -196,7 +196,21 @@ namespace WebApplication2.DataProviders
             return photo;
 
         }
-        
+
+        public bool modifierFacture(Facture facture)
+        {
+            if (facture.Id <= 0) return false;
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+            con.Open();
+            SqlCommand mySqlCommand = con.CreateCommand();
+            SqlTransaction transaction = con.BeginTransaction();
+            mySqlCommand.Connection = con;
+            mySqlCommand.Transaction = transaction;
+            mySqlCommand.CommandText = "update facture ";
+            return false;
+
+        }
+
 
     }
 }

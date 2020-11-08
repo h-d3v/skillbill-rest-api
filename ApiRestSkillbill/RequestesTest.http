@@ -4,8 +4,21 @@ POST https://localhost:44301/api/utilisateurs/6/groupes?monnaie=0&nom=testegdfgf
 Content-Type: application/xml
 
 
+
 ###
-POST https://localhost:44301/api/utilisateurs/6/groupes?nom=nouveau&monnaie=0
+POST http://192.168.0.23:44302/api/login
+Content-Type: application/json
+
+{"Courriel":"jj@jde.com","MotDePasse":"julien123"}
+
+
+###
+POST http://localhost:8080/api/utilisateurs/10/groupes?nom=nouveau&monnaie=0
+Content-Type: application/json
+
+{
+  "Nom": "hvhhhhh", "Monnaie": 0
+}
 
 ###
 PUT https://localhost:44301/api/groupes/1?nom=changed
@@ -18,7 +31,7 @@ Content-Type: application/json
 POST https://localhost:44301/api/groupes/1?idUtilisateur=2
 
 ###
-GET https://localhost:44301/api/utilisateurs/1/groupes/2/factures
+GET https://skillbillweb.azurewebsites.net/api/utilisateurs
 
 
 ###
@@ -52,7 +65,7 @@ Accept: application/xml
   
 ###
 
-POST https://localhost:44301/api/factures/13
+POST https://localhost:44301/api/factures/2
 Content-Type: application/json
 
 {"Id":1,

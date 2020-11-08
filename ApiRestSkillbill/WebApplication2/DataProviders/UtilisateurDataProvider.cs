@@ -9,8 +9,7 @@ namespace WebApplication2.DataProviders
 {
     public class UtilisateurDataProvider
     {
-
-        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
@@ -37,13 +36,13 @@ namespace WebApplication2.DataProviders
         
             if (dataReader.Read())
             {
-                utilisateur = new Utilisateur()
-                {
-                    Nom = (String) dataReader["nom"],
-                    Prenom =  (String) dataReader["prenom"],
-                    Courriel =  (String) dataReader["courriel"],
-                    Id =  (int) dataReader["id"]
-                };
+                utilisateur = new Utilisateur();
+
+                utilisateur.Nom = (String) dataReader["nom"];
+                //utilisateur.Prenom = (String) dataReader["prenom"];
+                utilisateur.Courriel = (String) dataReader["courriel"];
+                utilisateur.Id = (int) dataReader["id"];
+
             }
             dataReader.Close();
             con.Close();
@@ -69,7 +68,7 @@ namespace WebApplication2.DataProviders
                Utilisateur utilisateur = new Utilisateur()
                 {
                     Nom = (String) dataReader["nom"],
-                    Prenom =  (String) dataReader["prenom"],
+                   // Prenom =  (String) dataReader["prenom"],
                     Courriel =  (String) dataReader["courriel"],
                     Id =  (int) dataReader["id"],
                     
