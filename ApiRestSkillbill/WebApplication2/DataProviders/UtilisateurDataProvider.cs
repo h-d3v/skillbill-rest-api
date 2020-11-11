@@ -13,7 +13,7 @@ namespace WebApplication2.DataProviders
 {
     public class UtilisateurDataProvider
     {
-        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private readonly string CONNECTION_STRING =  "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
