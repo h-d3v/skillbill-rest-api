@@ -90,7 +90,7 @@ namespace WebApplication2.DataProviders
         public Utilisateur CreerUtilisateur(Utilisateur u)
         {
             SqlConnection con = new SqlConnection(CONNECTION_STRING);
-            SqlCommand cmd = new SqlCommand("dbo.INSERT_utilisateur", con);
+            SqlCommand cmd = new SqlCommand("INSERT_utilisateur", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             //TODO verifier que les champs ne sont pas null
@@ -121,7 +121,7 @@ namespace WebApplication2.DataProviders
 
             int nb;
             SqlConnection con = new SqlConnection(CONNECTION_STRING);
-            SqlCommand cmd = new SqlCommand("dbo.Count_email", con);
+            SqlCommand cmd = new SqlCommand("Count_email", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
             //TODO verifier que les champs ne sont pas null

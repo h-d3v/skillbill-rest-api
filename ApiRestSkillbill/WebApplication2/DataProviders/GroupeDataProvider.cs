@@ -71,6 +71,43 @@ namespace WebApplication2.DataProviders
             con.Close();
             return i == 1;
         }
+        
+        
+        public bool AjouterMembre(string courriel, int idGroupe)
+        {
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+            con.Open();
+            SqlCommand mySqlCommand = con.CreateCommand();
+            mySqlCommand.CommandText = "select id from Utilisateurs where courriel=@courriel";
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.AddWithValue("courriel", courriel);
+            DbDataReader dbDataReader = mySqlCommand.ExecuteReader();
+            int idUtilisateur = 0;
+            if (dbDataReader.Read())
+            {
+                idUtilisateur = (int) dbDataReader["id"];
+                dbDataReader.Close();
+            }
+            else return false;
+
+            mySqlCommand.CommandText = "insert into utilisateur_groupe(id_utilisateur, id_groupe ) values (@u , @g)";
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "u",
+                Value = idUtilisateur
+            });
+            mySqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "g",
+                Value = idGroupe
+            });
+            int i =  mySqlCommand.ExecuteNonQuery();
+            con.Close();
+            return i == 1;
+        }
 
         public bool ModifierNom(int idGroupe, string nom)
         {
@@ -102,7 +139,10 @@ namespace WebApplication2.DataProviders
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
-            mySqlCommand.CommandText = "select nom, monnaie, utilisateur_createur, date_creation, id_utilisateur, id_groupe from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe where id=@id  ";
+          //  mySqlCommand.CommandText = "select nom, monnaie, utilisateur_createur, date_creation, id_utilisateur, id_groupe from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe where id=@id  ";
+
+            mySqlCommand.CommandText =
+              "select Groupes.nom, Groupes.monnaie, utilisateur_createur, U.nom as username, date_creation, id_utilisateur, id_groupe from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe join Utilisateurs U on U.id = ug.id_utilisateur where Groupes.id=@id";
             mySqlCommand.CommandType = CommandType.Text;
             mySqlCommand.Parameters.Add(new SqlParameter()
             {
@@ -115,8 +155,10 @@ namespace WebApplication2.DataProviders
 
             while  (dataReader.Read())
             { 
-                if (groupe == null)
+                Groupe groupeSql = new Groupe(){Id =  (int) dataReader["id_groupe"] };
+                if (groupe == null || groupe.Id!=groupeSql.Id)
                 {
+                    
                     groupe= new Groupe()
                     {
                         Id = (int) dataReader["id_groupe"],
@@ -128,7 +170,11 @@ namespace WebApplication2.DataProviders
                         
                     };
                 }
-                Utilisateur utilisateur = new Utilisateur{Id= (int) dataReader["id_utilisateur"]};
+                Utilisateur utilisateur = new Utilisateur
+                {
+                    Id= (int) dataReader["id_utilisateur"],
+                    Nom = (String) dataReader["username"]
+                };
                 groupe.UtilisateursAbonnes.Add(utilisateur);
                 
             }

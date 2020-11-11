@@ -14,6 +14,12 @@ namespace WebApplication2.Controllers
             return groupeDataProvider.AjouterMembre(idUtilisateur, id);
         }
 
+        public bool Post([FromUri] int id, [FromUri] string courriel)
+        {
+            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+            return groupeDataProvider.AjouterMembre(courriel, id);
+        }
+
         public bool Put(int id, string nom)
         {
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
