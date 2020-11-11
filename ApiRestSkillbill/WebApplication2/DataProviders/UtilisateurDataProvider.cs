@@ -5,6 +5,9 @@ using System.Data.Common;
 using WebApplication2.Entites;
 using MySqlConnector;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
+using System.Runtime.Remoting.Messaging;
+using System.Diagnostics;
 
 namespace WebApplication2.DataProviders
 {
@@ -12,7 +15,7 @@ namespace WebApplication2.DataProviders
     {
 
         private readonly string CONNECTION_STRING = "Server=tcp:jdetest.database.windows.net,1433;Initial Catalog=jdeTest;Persist Security Info=False;User ID=jdetest;Password=Test@JDE.com;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        
+
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
@@ -33,20 +36,20 @@ namespace WebApplication2.DataProviders
                 ParameterName = "motPasse",
                 Value = motPasse
             });
-            
+
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
-            
-        
+
+
             if (dataReader.Read())
             {
                 utilisateur = new Utilisateur()
                 {
-                    Nom = (String) dataReader["nom"],
+                    Nom = (String)dataReader["nom"],
                     //ne sert a rien, le prenom n'est pas utilise 
                     //si on veut l'utiliser on peut faire une fonction qui insert un "" a chaque nouveau utilisateur
                     //Prenom =  (String) dataReader["prenom"],
-                    Courriel =  (String) dataReader["courriel"],
-                    Id =  (int) dataReader["id"]
+                    Courriel = (String)dataReader["courriel"],
+                    Id = (int)dataReader["id"]
                 };
             }
             dataReader.Close();
@@ -64,36 +67,38 @@ namespace WebApplication2.DataProviders
             SqlCommand mySqlCommand = con.CreateCommand();
             mySqlCommand.CommandText = "select nom,prenom,courriel,id from Utilisateurs";
             mySqlCommand.CommandType = CommandType.Text;
-            
+
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
-            
-        
-            while  (dataReader.Read())
+
+
+            while (dataReader.Read())
             {
-               Utilisateur utilisateur = new Utilisateur()
+                Utilisateur utilisateur = new Utilisateur()
                 {
-                    Nom = (String) dataReader["nom"],
-                    Prenom =  (String) dataReader["prenom"],
-                    Courriel =  (String) dataReader["courriel"],
-                    Id =  (int) dataReader["id"],
-                    
+                    Nom = (String)dataReader["nom"],
+                    Prenom = (String)dataReader["prenom"],
+                    Courriel = (String)dataReader["courriel"],
+                    Id = (int)dataReader["id"],
+
                 };
-               utilisateurs.Add(utilisateur);
+                utilisateurs.Add(utilisateur);
             }
             dataReader.Close();
             con.Close();
 
-       
+
 
             return utilisateurs;
         }
 
         public Utilisateur CreerUtilisateur(Utilisateur u)
         {
-            SqlConnection con= new SqlConnection(CONNECTION_STRING);
+            SqlConnection con = new SqlConnection(CONNECTION_STRING);
             SqlCommand cmd = new SqlCommand("dbo.INSERT_utilisateur", con);
             cmd.CommandType = CommandType.StoredProcedure;
-            
+
+            //TODO verifier que les champs ne sont pas null
+
             cmd.Parameters.AddWithValue("@Nom", u.Nom);
             cmd.Parameters.AddWithValue("@Courriel", u.Courriel);
             cmd.Parameters.AddWithValue("@MotPasse", u.MotDePasse);
@@ -102,7 +107,7 @@ namespace WebApplication2.DataProviders
             try
             {
                 int rowsAffected = cmd.ExecuteNonQuery();
-              
+
             }
             catch (SqlException)
             {
@@ -110,7 +115,37 @@ namespace WebApplication2.DataProviders
             }
             con.Close();
             return SeConnecter(u.Courriel, u.MotDePasse);
-           
+
+        }
+
+
+
+        public bool UtilisateurExiste(string courriel)
+        {
+
+            int nb;
+            SqlConnection con = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cmd = new SqlCommand("dbo.Count_email", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            //TODO verifier que les champs ne sont pas null
+
+            cmd.Parameters.AddWithValue("@Courriel", courriel);
+
+            con.Open();
+            try
+            {
+                nb = (int)cmd.ExecuteScalar();
+
+            }
+            catch (SqlException)
+            {
+                return true;
+            }
+            con.Close();
+            Debug.WriteLine(nb);
+            return nb == 1 ? true : false;
+            
         }
     }
 }

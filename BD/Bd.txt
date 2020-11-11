@@ -97,3 +97,15 @@ GO
   ,@Courriel= 'Crabber@tommy.com'
   ,@MotPasse = 'Niro123'
 GO**/
+
+
+CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @MotPasse varchar(250)
+AS
+
+SELECT COUNT(0) FROM [Utilisateurs] WHERE courriel=[Courriel]
+           ([nom]
+           ,[courriel]
+           ,[mot_de_passe])
+     VALUES
+           (@Courriel)
+GO
