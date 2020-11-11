@@ -32,9 +32,6 @@ namespace WebApplication2.Controllers
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
             return groupeDataProvider.TrouverGroupesParUtilisateur(id);
         }
-        
-        
-
 
 
         // POST créer un groupe

@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using WebApplication2.Entites;
+using MySqlConnector;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
+using System.Runtime.Remoting.Messaging;
+using System.Diagnostics;
 
 namespace WebApplication2.DataProviders
 {
@@ -59,7 +63,7 @@ namespace WebApplication2.DataProviders
             SqlCommand mySqlCommand = con.CreateCommand();
             mySqlCommand.CommandText = "select nom,prenom,courriel,id from Utilisateurs";
             mySqlCommand.CommandType = CommandType.Text;
-            
+
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
             
         
@@ -81,6 +85,63 @@ namespace WebApplication2.DataProviders
             
 
             return utilisateurs;
+        }
+
+        public Utilisateur CreerUtilisateur(Utilisateur u)
+        {
+            SqlConnection con = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cmd = new SqlCommand("dbo.INSERT_utilisateur", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            //TODO verifier que les champs ne sont pas null
+
+            cmd.Parameters.AddWithValue("@Nom", u.Nom);
+            cmd.Parameters.AddWithValue("@Courriel", u.Courriel);
+            cmd.Parameters.AddWithValue("@MotPasse", u.MotDePasse);
+
+            con.Open();
+            try
+            {
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+            }
+            catch (SqlException)
+            {
+                return null;
+            }
+            con.Close();
+            return SeConnecter(u.Courriel, u.MotDePasse);
+
+        }
+
+
+
+        public bool UtilisateurExiste(string courriel)
+        {
+
+            int nb;
+            SqlConnection con = new SqlConnection(CONNECTION_STRING);
+            SqlCommand cmd = new SqlCommand("dbo.Count_email", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            //TODO verifier que les champs ne sont pas null
+
+            cmd.Parameters.AddWithValue("@Courriel", courriel);
+
+            con.Open();
+            try
+            {
+                nb = (int)cmd.ExecuteScalar();
+
+            }
+            catch (SqlException)
+            {
+                return true;
+            }
+            con.Close();
+            Debug.WriteLine(nb);
+            return nb == 1 ? true : false;
+            
         }
     }
 }

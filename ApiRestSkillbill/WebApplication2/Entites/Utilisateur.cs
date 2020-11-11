@@ -1,12 +1,21 @@
-﻿namespace WebApplication2.Entites
+﻿using System.Runtime.Serialization;
+
+namespace WebApplication2.Entites
 {
+    [DataContract]
     public class Utilisateur
     {
+        [DataMember]
         public string Nom { get; set; }
+        [DataMember]
         public string Prenom { get; set; }
+        [DataMember]
         public string Courriel { get; set; }
+        [DataMember]
         public int Id { get; set; }
+        [DataMember]
         public int Monnaie { get; set; }
+        [DataMember]
         public string MotDePasse { get; set; }
 
         protected bool Equals(Utilisateur other)

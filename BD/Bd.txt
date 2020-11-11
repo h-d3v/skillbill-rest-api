@@ -1,0 +1,111 @@
+
+DROP TABLE if exists utilisateur_groupe;
+DROP TABLE if exists utilisateur_facture;
+DROP TABLE if exists photo;
+DROP TABLE if exists facture;
+DROP TABLE if exists Groupes;
+DROP TABLE if exists Utilisateurs;
+DROP PROCEDURE IF EXISTS dbo.INSERT_utilisateur;  
+
+
+
+CREATE TABLE Utilisateurs (
+
+                              nom VARCHAR(255) NOT NULL,
+                              prenom varchar(255),
+                              courriel varchar(255) NOT NULL UNIQUE,
+                              id int Identity(1,1) Primary Key ,
+                              mot_de_passe varchar(255) NOT NULL,
+                              monnaie int default NULL
+);
+
+
+CREATE TABLE Groupes (
+                         id int Identity(1,1)  primary key,
+                         nom VARCHAR(255) not null ,
+                         monnaie int not null,
+                         utilisateur_createur int not null ,
+                         date_creation DATE ,
+                         CONSTRAINT utilisateur_createur_groupe_fk foreign key (utilisateur_createur) references Utilisateurs(id)
+);
+
+CREATE TABLE facture(
+                        id int Identity(1,1)  primary key,
+                        groupe int not null ,
+                        utilisateur_createur int not null,
+                        date_facture date,
+                        montant_total float not null,
+                        nom VARCHAR(255),
+                        CONSTRAINT utilisateur_createur_facture_fk foreign key (utilisateur_createur) references Utilisateurs(id),
+                        constraint groupe_facture_fk foreign key (groupe) references Groupes(id)
+);
+
+CREATE TABLE photo(
+                      id int IDENTITY(1,1) primary key ,
+                      id_facture int NOT NULL ,
+                      image Varbinary,
+                      url VARCHAR(255),
+                      CONSTRAINT photo_facture_fk foreign key (id_facture) REFERENCES facture(id)
+);
+
+CREATE TABLE utilisateur_groupe (
+                                    id_utilisateur int NOT NULL ,
+                                    id_groupe int NOT NULL,
+                                    CONSTRAINT utilisateur_fk foreign key (id_utilisateur) references Utilisateurs(id),
+                                    CONSTRAINT groupe_fk foreign key (id_groupe) references Groupes(id),
+                                    PRIMARY KEY (id_groupe, id_utilisateur)
+);
+
+CREATE TABLE utilisateur_facture (
+                                     id_facture int not null ,
+                                     id_utilisateur int not null,
+                                     montant_paye float not null ,
+                                     PRIMARY KEY (id_utilisateur, id_facture),
+                                     constraint utilisateur_facture_fk foreign key (id_utilisateur) references Utilisateurs(id),
+                                     constraint facture_utilisateur foreign key (id_facture) references facture(id)
+);
+
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Quinta', 'Rosina', 'qrosinac@nationalgeographic.com', 'pQP5W1SGmB');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Glenda', 'Cessford', 'gcessfordd@walmart.com', 'IsaKs0w3');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Heddi', 'Craggs', 'hcraggse@mozilla.com', 'bsD9L5brqC');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tamqrah', 'Kos', 'tkosf@berkeley.edu', 's6zPXpq');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tanhya', 'Castellaccio', 'tcastellacciog@gizmodo.com', 'bMm0mL5Pw');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Cherri', 'Shuker', 'cshukerh@abc.net.au', 'mbOXfJmabv');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Magdalen', 'Fountian', 'mfountiani@reverbnation.com', 'AEtGjYXtuF3B');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Bernadette', 'Sercombe', 'bsercombej@chicagotribune.com', '6pvdClVQVGM');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Weston', 'Graine', 'wgrainek@networkadvertising.org', 'miWkA7Bhx');
+
+
+--Stored procedure pour 
+CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @MotPasse varchar(250)
+
+AS
+
+INSERT INTO [Utilisateurs]
+           ([nom]
+           ,[courriel]
+           ,[mot_de_passe])
+     VALUES
+           (@Nom
+           ,@Courriel
+           ,@MotPasse)
+GO
+
+--Exemple d'utilisation de la procedure stockee
+/**EXECUTE [dbo].[INSERT_utilisateur] 
+   @Nom = 'Tommy'
+  ,@Courriel= 'Crabber@tommy.com'
+  ,@MotPasse = 'Niro123'
+GO**/
+
+
+CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @MotPasse varchar(250)
+AS
+
+SELECT COUNT(0) FROM [Utilisateurs] WHERE courriel=[Courriel]
+           ([nom]
+           ,[courriel]
+           ,[mot_de_passe])
+     VALUES
+           (@Courriel)
+GO
