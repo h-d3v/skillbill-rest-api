@@ -14,7 +14,7 @@ namespace WebApplication2.DataProviders
         {
             if (facture.Photos == null)
             {
-                SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+                SqlConnection con =   new SqlConnection(CONNECTION_STRING);
                 con.Open();
                 SqlCommand mySqlCommand = con.CreateCommand();
                 SqlTransaction transaction = con.BeginTransaction();

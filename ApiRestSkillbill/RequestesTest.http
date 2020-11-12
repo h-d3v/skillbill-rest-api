@@ -65,12 +65,14 @@ Accept: application/xml
   
 ###
 
-HEAD http://localhost:8080/api/Register?courriel=jj@jde.com
+HEAD http://localhost:8080/api/Register?courriel=qrosinac@nationalgeographic.com
 
 ###
+HEAD http://192.168.0.23:44302/api/register?courriel=grosinac@nationalgeographic.com
+###
 
-POST  http://localhost:8080/api/groupes/7?courriel=qrosinac@nationalgeographic.com
-
+POST  http://localhost:8080/api/groupes/11?courriel=qrosinac@nationalgeographic.com
+Accept: application/json
 ###
 
 POST https://localhost:44301/api/factures/2

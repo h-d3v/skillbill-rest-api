@@ -36,7 +36,7 @@ namespace WebApplication2.Controllers
 
         // POST créer un groupe
         [Route("api/utilisateurs/{id}/groupes")]
-        public bool Post([FromUri] int id, [FromBody] Groupe groupe)
+        public Groupe Post([FromUri] int id, [FromBody] Groupe groupe)
         {
             GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
             return groupeDataProvider.CreerGroupe(groupe.Nom, id, groupe.Monnaie);

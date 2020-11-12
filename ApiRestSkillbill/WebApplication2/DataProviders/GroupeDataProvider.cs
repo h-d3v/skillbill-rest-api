@@ -11,7 +11,7 @@ namespace WebApplication2.DataProviders
     {
         private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
 
-        public bool CreerGroupe(string nom, int idUtilisateur, int Monnaie)
+        public Groupe CreerGroupe(string nom, int idUtilisateur, int Monnaie)
         {
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
@@ -41,11 +41,15 @@ namespace WebApplication2.DataProviders
             
             if (Convert.ToInt32(o) >0)
             {
-                return AjouterMembre(idUtilisateur, Convert.ToInt32(o));
+                if (AjouterMembre(idUtilisateur, Convert.ToInt32(o)))
+                {
+                    return new Groupe(){Id = Convert.ToInt32(o), Nom = nom};
+                }
+               
             }
 
             con.Close();
-            return false;
+            return null;
         }
 
         public bool AjouterMembre(int idUtilisateur, int idGroupe)
