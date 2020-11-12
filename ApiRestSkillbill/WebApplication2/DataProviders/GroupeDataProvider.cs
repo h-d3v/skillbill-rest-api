@@ -194,7 +194,7 @@ namespace WebApplication2.DataProviders
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
-            mySqlCommand.CommandText = "select id, nom, monnaie, utilisateur_createur, date_creation, id_utilisateur, id_groupe from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe where ug.id_utilisateur=@id order by id" ;
+            mySqlCommand.CommandText = "select id, nom, monnaie, utilisateur_createur, date_creation, u.id_groupe, ug.id_utilisateur from Groupes join utilisateur_groupe ug on Groupes.id = ug.id_groupe join utilisateur_groupe u on Groupes.id = u.id_groupe where u.id_utilisateur=@id order by id" ;
             mySqlCommand.CommandType = CommandType.Text;
             mySqlCommand.Parameters.AddWithValue("id", id);
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
