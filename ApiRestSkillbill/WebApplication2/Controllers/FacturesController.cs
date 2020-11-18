@@ -21,6 +21,12 @@ namespace WebApplication2.Controllers
             return factureDataProvider.AjouterPhoto(id, photo);
         }
 
+        public bool Put(Facture facture)
+        {
+            FactureDataProvider factureDataProvider = new FactureDataProvider();
+            return factureDataProvider.ModifierFacture(facture);
+        }
+
         public Photo Get(int id)
         {
             FactureDataProvider factureDataProvider = new FactureDataProvider();

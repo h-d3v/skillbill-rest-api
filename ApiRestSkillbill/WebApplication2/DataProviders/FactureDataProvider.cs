@@ -196,17 +196,96 @@ namespace WebApplication2.DataProviders
 
         }
 
-        public bool modifierFacture(Facture facture)
+        public bool ModifierFacture(Facture facture)
         {
             if (facture.Id <= 0) return false;
+            bool estReussi= false;
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
             SqlTransaction transaction = con.BeginTransaction();
             mySqlCommand.Connection = con;
             mySqlCommand.Transaction = transaction;
-            mySqlCommand.CommandText = "update facture ";
-            return false;
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.AddWithValue("id", facture.Id);
+
+                if (facture.Nom != null) 
+                { 
+                     mySqlCommand.CommandText = "update facture set nom=@nom where id=@id ";
+                   
+                     mySqlCommand.Parameters.AddWithValue("nom", facture.Nom);
+                     int iRow = mySqlCommand.ExecuteNonQuery();
+                     estReussi = (iRow == 1);
+                     if (!estReussi)
+                     {
+                         transaction.Rollback();
+                     }
+                }
+
+            if (facture.DateCreation != null)
+            {
+                mySqlCommand.CommandText = "update facture set date_facture=@date where id=@id ";
+                mySqlCommand.Parameters.AddWithValue("date", facture.DateCreation);
+                int iRow = mySqlCommand.ExecuteNonQuery();
+                estReussi = (iRow == 1);
+                if (!estReussi)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+            if (facture.MontantTotal >= 0)
+            {
+                mySqlCommand.CommandText = "update facture set montant_total=@montant where id=@id ";
+                mySqlCommand.Parameters.AddWithValue("montant", facture.MontantTotal);
+                int iRow = mySqlCommand.ExecuteNonQuery();
+                estReussi = (iRow == 1);
+                if (!estReussi)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+
+            if (facture.PayeursEtMontant != null)
+            {
+                HashSet<UtilisateurPayeur> utilisateurPayeurs = facture.PayeursEtMontant;
+                int i = 555;
+                int idFacture = facture.Id;
+                int compteurRang = 0;
+                foreach (var VARIABLE in utilisateurPayeurs)
+                {
+                   
+                    mySqlCommand.CommandText =
+                        $"update utilisateur_facture set montant_paye = @mp{i} where id_utilisateur=@idUser{i} and id_facture = {idFacture} ";
+                    mySqlCommand.Parameters.AddWithValue("idUser" + i, VARIABLE.UtilisateurId);
+                    mySqlCommand.Parameters.AddWithValue("mp" + i, VARIABLE.MontantPaye);
+                    int dbRow = mySqlCommand.ExecuteNonQuery();
+                    compteurRang += dbRow;
+
+                    if (dbRow == 0)
+                    {
+                        
+                        mySqlCommand.CommandText =
+                            $"insert into utilisateur_facture(id_facture, id_utilisateur, montant_paye) VALUES ( {idFacture}, @idUser{i}, @mp{i} ) ";
+                            dbRow = mySqlCommand.ExecuteNonQuery();
+                            compteurRang += dbRow;
+                    }
+
+                    i++;
+                }
+                
+               
+                estReussi = (compteurRang >= 1);
+                if (!estReussi)
+                {
+                    transaction.Rollback();
+                }
+            }
+            transaction.Commit();
+            con.Close();
+
+            return estReussi;
 
         }
 

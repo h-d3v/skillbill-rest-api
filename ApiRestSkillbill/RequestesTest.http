@@ -71,6 +71,35 @@ HEAD http://localhost:8080/api/Register?courriel=qrosinac@nationalgeographic.com
 HEAD http://192.168.0.23:44302/api/register?courriel=grosinac@nationalgeographic.com
 ###
 
+PUT http://192.168.0.23:44302/api/factures
+Content-Type: application/json
+
+ {
+    "Photos": null,
+   "PayeursEtMontant": [
+     {
+       "UtilisateurId": 4,
+       "MontantPaye": 3
+     },
+     {
+       "UtilisateurId": 2,
+       "MontantPaye": 22.3
+     },
+     {
+       "UtilisateurId": 3,
+       "MontantPaye": 3
+     }
+   ],
+    "Id": 22,
+    "UtilisateurCreateurId": 10,
+    "DateCreation": "2020-11-10 00:00:00",
+    "MontantTotal": 11,
+    "Nom": "Facture du 1999-11-10",
+    "IdGroupe": 0
+  }
+
+###
+
 POST  http://localhost:8080/api/groupes/11?courriel=qrosinac@nationalgeographic.com
 Accept: application/json
 ###
