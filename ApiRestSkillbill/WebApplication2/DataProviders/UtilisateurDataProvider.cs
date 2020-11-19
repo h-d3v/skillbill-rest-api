@@ -13,7 +13,7 @@ namespace WebApplication2.DataProviders
 {
     public class UtilisateurDataProvider
     {
-        private readonly string CONNECTION_STRING =  "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
@@ -141,7 +141,6 @@ namespace WebApplication2.DataProviders
             con.Close();
             Debug.WriteLine(nb);
             return nb == 1 ? true : false;
-            
         }
     }
 }
