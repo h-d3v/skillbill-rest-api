@@ -13,21 +13,12 @@ namespace WebApplication2.Controllers
 {
     public class RegisterController:ApiController
     {
-        /*public Utilisateur Post(Utilisateur utilisateur)
-        {
-            if (utilisateur == null)
-            {
-
-            }
-            
-            UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
-            return dataProvider.CreerUtilisateur(utilisateur);
-        }*/
+       
 
         [ResponseType(typeof(Utilisateur))]
         public HttpResponseMessage Post(Utilisateur user)
         {
-            if(user==null || user.Courriel==null || user.Nom==null || user.MotDePasse==null)
+            if(user==null || user.Courriel==null || user.Nom==null || user.MotDePasse==null || user.Monnaie==null)
             {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
