@@ -6,7 +6,6 @@ namespace WebApplication2.Controllers
 {
     public class LoginController : ApiController
     {
-
         public Utilisateur Post([FromBody] Utilisateur utilisateur)
         {
             UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
