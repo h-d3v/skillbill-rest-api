@@ -192,7 +192,7 @@ namespace WebApplication2.DataProviders
                     IdFacture = (int) dataReader["id_facture"]
                 };
                 byte[] result = null;
-                if (!dataReader.IsDBNull(2))
+                if (!dataReader.IsDBNull(2))//image dans la rangée
                 {
                     long size = dataReader.GetBytes(2, 0, null, 0, 0); //get the length of data 
                     result = new byte[size];
@@ -327,5 +327,78 @@ namespace WebApplication2.DataProviders
         }
 
 
+        public Facture TrouverFactureParId(int factureId)
+        {
+            SqlConnection con =  new SqlConnection(CONNECTION_STRING);
+            con.Open();
+            SqlCommand mySqlCommand = con.CreateCommand();
+            mySqlCommand.CommandText = "select facture.id as idFacture , groupe, utilisateur_createur, date_facture, montant_total, nom , id_utilisateur, montant_paye from facture join utilisateur_facture uf on facture.id = uf.id_facture  where facture.id=@id";
+            mySqlCommand.CommandType = CommandType.Text;
+            mySqlCommand.Parameters.AddWithValue("id", factureId);
+            DbDataReader dbDataReader = mySqlCommand.ExecuteReader();
+            Facture facture = null;
+            while (dbDataReader.Read())
+            {
+                if (facture == null)
+                {
+                    facture= new Facture();
+                    facture.Id = (int) dbDataReader["idFacture"];
+                    facture.UtilisateurCreateurId =(int) dbDataReader["utilisateur_createur"];
+                    facture.IdGroupe = (int) dbDataReader["groupe"];
+                    facture.Nom = (string) dbDataReader["nom"];
+                    facture.MontantTotal = Convert.ToSingle( dbDataReader["montant_total"]);
+                    facture.DateCreation = ((DateTime) dbDataReader["date_facture"]).ToString();
+                    facture.Photos = new List<Photo>();
+                    facture.PayeursEtMontant = new HashSet<UtilisateurPayeur>();
+                }
+           
+                UtilisateurPayeur utilisateurPayeur = new UtilisateurPayeur();
+                utilisateurPayeur.MontantPaye =Convert.ToSingle(dbDataReader["montant_paye"]);
+                
+                utilisateurPayeur.UtilisateurId = (int) dbDataReader["id_utilisateur"];
+                facture.PayeursEtMontant.Add(utilisateurPayeur);
+                
+            }
+            dbDataReader.Close();
+            if (facture != null)
+            {
+                mySqlCommand = con.CreateCommand();
+                mySqlCommand.CommandText = "select id, id_facture, image, url  from photo where id_facture=@id" ;
+                mySqlCommand.CommandType = CommandType.Text;
+                mySqlCommand.Parameters.AddWithValue("id", factureId);
+                dbDataReader = mySqlCommand.ExecuteReader();
+                while (dbDataReader.Read())
+                {
+                   Photo photo = new Photo();
+                   photo.Id = (int) dbDataReader["id"];
+                   photo.IdFacture = (int) dbDataReader["id_facture"];
+                   photo.Uri = (string) dbDataReader["url"];
+                   long size = dbDataReader.GetBytes(2, 0, null, 0, 0); 
+                   var result = new byte[size];
+                   int bufferSize = 1024;
+                   long bytesRead = 0;
+                   int curPos = 0;
+                   while (bytesRead < size)
+                   {
+                       bytesRead += dbDataReader.GetBytes(2, curPos, result, curPos, bufferSize);
+                       curPos += bufferSize;
+                   }
+
+                   string str = Convert.ToBase64String(result);
+                   photo.LowResEncodeBase64 = Convert.ToBase64String(result);
+                   facture.Photos.Add(photo);
+
+                }
+                dbDataReader.Close();
+
+            }
+
+       
+            
+            
+            
+            con.Close();
+            return facture;
+        }
     }
 }

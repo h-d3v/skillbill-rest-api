@@ -27,6 +27,15 @@ namespace WebApplication2.Controllers
             return factureDataProvider.ModifierFacture(facture);
         }
 
+        
+        [System.Web.Http.HttpGet]
+        public Facture GetFacture(int id)
+        {
+            FactureDataProvider factureDataProvider= new FactureDataProvider();
+            return factureDataProvider.TrouverFactureParId(id);
+        }
+
+        [System.Web.Http.Route("api/factures/photos/{id}")]
         public Photo Get(int id)
         {
             FactureDataProvider factureDataProvider = new FactureDataProvider();

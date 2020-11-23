@@ -6,6 +6,14 @@ Content-Type: application/xml
 
 
 ###
+
+PUT http://192.168.0.23:44302/api/factures
+Content-Type: application/json
+
+{"DateCreation":"2020-11-11 00:00:00","Id":23,"IdGroupe":0,"UtilisateurCreateurId":10,"PayeursEtMontant":[{"UtilisateurId":10,"MontantPaye":54444.0}],"dateFacture":{},"Nom":"Facture du 2020-11-11","montantPayeParParUtilisateur":{"10":54444.0},"MontantTotal":54444.0}
+
+
+###
 POST http://192.168.0.23:44302/api/login
 Content-Type: application/json
 
