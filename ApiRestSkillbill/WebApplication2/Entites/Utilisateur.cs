@@ -14,7 +14,7 @@ namespace WebApplication2.Entites
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public int Monnaie { get; set; }
+        public string Monnaie { get; set; }
         [DataMember]
         public string MotDePasse { get; set; }
 

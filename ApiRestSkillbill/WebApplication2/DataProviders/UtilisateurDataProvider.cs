@@ -13,14 +13,14 @@ namespace WebApplication2.DataProviders
 {
     public class UtilisateurDataProvider
     {
-        private readonly string CONNECTION_STRING =  "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
-            mySqlCommand.CommandText = "select nom,prenom,courriel,id from Utilisateurs where courriel=@courriel AND mot_de_passe =@motPasse";
+            mySqlCommand.CommandText = "select nom,prenom,courriel,id,monnaie from Utilisateurs where courriel=@courriel AND mot_de_passe =@motPasse";
             mySqlCommand.CommandType = CommandType.Text;
             mySqlCommand.Parameters.Add(new SqlParameter()
             {
@@ -46,7 +46,7 @@ namespace WebApplication2.DataProviders
                 //utilisateur.Prenom = (String) dataReader["prenom"];
                 utilisateur.Courriel = (String) dataReader["courriel"];
                 utilisateur.Id = (int) dataReader["id"];
-
+                utilisateur.Monnaie = (String)dataReader["monnaie"];
             }
             dataReader.Close();
             con.Close();
@@ -98,7 +98,7 @@ namespace WebApplication2.DataProviders
             cmd.Parameters.AddWithValue("@Nom", u.Nom);
             cmd.Parameters.AddWithValue("@Courriel", u.Courriel);
             cmd.Parameters.AddWithValue("@MotPasse", u.MotDePasse);
-
+            cmd.Parameters.AddWithValue("@Monnaie", u.Monnaie); 
             con.Open();
             try
             {
@@ -141,7 +141,6 @@ namespace WebApplication2.DataProviders
             con.Close();
             Debug.WriteLine(nb);
             return nb == 1 ? true : false;
-            
         }
     }
 }

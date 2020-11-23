@@ -1,11 +1,10 @@
-
 DROP TABLE if exists utilisateur_groupe;
 DROP TABLE if exists utilisateur_facture;
 DROP TABLE if exists photo;
 DROP TABLE if exists facture;
 DROP TABLE if exists Groupes;
 DROP TABLE if exists Utilisateurs;
-DROP PROCEDURE IF EXISTS dbo.INSERT_utilisateur;  
+
 
 
 
@@ -16,7 +15,7 @@ CREATE TABLE Utilisateurs (
                               courriel varchar(255) NOT NULL UNIQUE,
                               id int Identity(1,1) Primary Key ,
                               mot_de_passe varchar(255) NOT NULL,
-                              monnaie int default NULL
+                              monnaie varchar(255) default 'CAD'
 );
 
 
@@ -76,19 +75,22 @@ insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Bernadet
 insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Weston', 'Graine', 'wgrainek@networkadvertising.org', 'miWkA7Bhx');
 
 
+DROP PROCEDURE IF EXISTS dbo.INSERT_utilisateur;  
 --Stored procedure pour 
-CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @MotPasse varchar(250)
+CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @MotPasse varchar(250), @Monnaie varchar(250)='CAD'
 
 AS
 
 INSERT INTO [Utilisateurs]
            ([nom]
            ,[courriel]
-           ,[mot_de_passe])
+           ,[mot_de_passe]
+           ,[monnaie])
      VALUES
            (@Nom
            ,@Courriel
-           ,@MotPasse)
+           ,@MotPasse
+           ,@Monnaie)
 GO
 
 --Exemple d'utilisation de la procedure stockee
@@ -99,13 +101,11 @@ GO
 GO**/
 
 
-CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @MotPasse varchar(250)
+CREATE PROCEDURE Count_email  @Courriel varchar(250)
 AS
 
-SELECT COUNT(0) FROM [Utilisateurs] WHERE courriel=[Courriel]
-           ([nom]
-           ,[courriel]
-           ,[mot_de_passe])
-     VALUES
-           (@Courriel)
+SELECT COUNT(0) FROM [Utilisateurs] WHERE courriel=@Courriel
+         
 GO
+
+--equivalenet de describe table: exec sp_columns MyTable
