@@ -40,7 +40,7 @@ namespace WebApplication2.Controllers
             {
                 return new HttpResponseMessage(HttpStatusCode.Conflict);
             }
-            return Request.CreateResponse(HttpStatusCode.Created, user);
+            return Request.CreateResponse(HttpStatusCode.Created, userRetour);
         }
 
         [HttpHead]

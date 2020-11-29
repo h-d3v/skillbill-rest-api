@@ -89,7 +89,7 @@ Accept: application/json
 POST http://192.168.0.23:44302/api/factures
 Content-Type: application/json
 
-{"DateCreation":"2020-11-19","Id":0,"IdGroupe":8,"UtilisateurCreateurId":10,"PayeursEtMontant":[{"UtilisateurId":10,"MontantPaye":22.0}],"Photos":[],"Nom":"Facture du 2020-11-19",
+{"DateCreation":"2020-11-19","Id":0,"IdGroupe":1,"UtilisateurCreateurId":10,"PayeursEtMontant":[{"UtilisateurId":10,"MontantPaye":22.0}],"Photos":[],"Nom":"Facture du 2020-11-19",
   "Photos":[{"LowResEncodeBase64":"ZXdzcmV3cndlcXJ0ZmV3cXRxd2V0ZXc="}]}
 ###
 

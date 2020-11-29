@@ -69,7 +69,7 @@ namespace WebApplication2.DataProviders
                             mySqlCommand.CommandText = $"insert into photo(id_facture, image, url) VALUES ({i},@image{k},@url)" ;
                             mySqlCommand.CommandType = CommandType.Text;
                             Byte[] bytes = Convert.FromBase64String(photo.LowResEncodeBase64);
-                            mySqlCommand.Parameters.Add("image"+k, SqlDbType.VarBinary).Value= bytes;
+                            mySqlCommand.Parameters.AddWithValue("image" + k, bytes);
                             k += mySqlCommand.ExecuteNonQuery();
                         }
                         
