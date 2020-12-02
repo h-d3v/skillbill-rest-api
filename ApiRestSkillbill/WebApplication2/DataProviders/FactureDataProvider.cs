@@ -300,6 +300,21 @@ namespace WebApplication2.DataProviders
 
                          i++;
                      }
+                     if (facture.Photos != null || facture.Photos.Count>0)
+                     { 
+                         int k = 0;
+                         mySqlCommand.Parameters.AddWithValue("url", "non implémenté");
+                         foreach (var photo in facture.Photos)
+                         {
+                             mySqlCommand.CommandText = $"update photo set image = @image{k} where id= @idPhoto{k} " ;
+                             mySqlCommand.CommandType = CommandType.Text;
+                             Byte[] bytes = Convert.FromBase64String(photo.LowResEncodeBase64);
+                             mySqlCommand.Parameters.AddWithValue("image" + k, bytes);
+                             mySqlCommand.Parameters.AddWithValue("idPhoto" + k, photo.Id);
+                             k += mySqlCommand.ExecuteNonQuery();
+                         }
+                        
+                     }
 
 
                      estReussi = (compteurRang >= 1);

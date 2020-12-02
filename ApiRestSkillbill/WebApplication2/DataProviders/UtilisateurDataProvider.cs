@@ -61,7 +61,7 @@ namespace WebApplication2.DataProviders
             SqlConnection con = new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
-            mySqlCommand.CommandText = "select nom,prenom,courriel,id from Utilisateurs";
+            mySqlCommand.CommandText = "select nom,prenom,courriel,id, monnaie from Utilisateurs";
             mySqlCommand.CommandType = CommandType.Text;
 
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
@@ -75,6 +75,8 @@ namespace WebApplication2.DataProviders
                    // Prenom =  (String) dataReader["prenom"],
                     Courriel =  (String) dataReader["courriel"],
                     Id =  (int) dataReader["id"],
+                    Monnaie = (string) dataReader["monnaie"]
+                    
                     
                 };
                utilisateurs.Add(utilisateur);
