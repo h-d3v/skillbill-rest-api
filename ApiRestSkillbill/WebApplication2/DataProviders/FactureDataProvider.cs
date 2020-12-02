@@ -86,7 +86,7 @@ namespace WebApplication2.DataProviders
                 return true;
             
             
-            return false;
+           // return false;
         }
 
         public List<Facture> getFacturesParGroupe(int idGroupe)

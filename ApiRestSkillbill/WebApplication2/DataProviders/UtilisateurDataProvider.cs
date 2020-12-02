@@ -134,13 +134,73 @@ namespace WebApplication2.DataProviders
                 nb = (int)cmd.ExecuteScalar();
 
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
+                Debug.WriteLine(e.Message.ToString());
                 return true;
             }
             con.Close();
             Debug.WriteLine(nb);
             return nb == 1 ? true : false;
+        }
+
+        //todo retourner le nouvel utilisateur si la modification a faite, sinon retour null
+        public Utilisateur  MettreAJours(Utilisateur utilisateurModifie)
+        {
+            int nbRowsAffected;
+            SqlConnection con = new SqlConnection(CONNECTION_STRING);
+            SqlCommand sqlCommand = con.CreateCommand();
+            sqlCommand.CommandText = "update utilisateurs set nom=@nom,courriel=@courriel,monnaie=@monnaie,mot_de_passe=@motPasse where id=@id";
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "courriel",
+                Value = utilisateurModifie.Courriel
+            });
+
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "motPasse",
+                Value = utilisateurModifie.MotDePasse
+            });
+
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "nom",
+                Value = utilisateurModifie.Nom
+            });
+
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "monnaie",
+                Value = utilisateurModifie.Monnaie
+            });
+
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "id",
+                Value = utilisateurModifie.Id
+            });
+
+            con.Open();
+            try
+            {
+                nbRowsAffected = (int)sqlCommand.ExecuteNonQuery();
+
+            }
+            catch (SqlException e)
+            {
+                Debug.WriteLine(e.Message.ToString());
+                return null;
+            }
+            con.Close();
+            Debug.WriteLine(nbRowsAffected);
+            return nbRowsAffected == 1 ? SeConnecter(utilisateurModifie.Courriel, utilisateurModifie.MotDePasse) : null;
         }
     }
 }
