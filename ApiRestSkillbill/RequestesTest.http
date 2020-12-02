@@ -6,6 +6,18 @@ Content-Type: application/xml
 
 
 ###
+POST http://localhost:8080/api/register
+Content-Type: application/json
+
+{
+  "Nom": "alslfdlflf",
+
+  "Courriel": "ahhafda@aaa.com",
+
+  "MotDePasse": "sdhdfhdhd"
+}
+
+###
 
 PUT http://192.168.0.23:44302/api/factures
 Content-Type: application/json

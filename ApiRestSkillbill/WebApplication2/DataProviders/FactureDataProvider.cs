@@ -61,7 +61,7 @@ namespace WebApplication2.DataProviders
 
 
                     if (facture.Photos != null || facture.Photos.Count>0)
-                    {
+                    { //TODO
                         int k = 0;
                         mySqlCommand.Parameters.AddWithValue("url", "non implémenté");
                         foreach (var photo in facture.Photos)
