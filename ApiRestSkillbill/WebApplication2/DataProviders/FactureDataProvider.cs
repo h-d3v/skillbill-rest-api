@@ -311,7 +311,17 @@ namespace WebApplication2.DataProviders
                              Byte[] bytes = Convert.FromBase64String(photo.LowResEncodeBase64);
                              mySqlCommand.Parameters.AddWithValue("image" + k, bytes);
                              mySqlCommand.Parameters.AddWithValue("idPhoto" + k, photo.Id);
-                             k += mySqlCommand.ExecuteNonQuery();
+                             int rangee = 0;
+                             rangee = mySqlCommand.ExecuteNonQuery();
+                             if (rangee == 0)
+                             {
+                                 mySqlCommand.CommandText = $"insert into photo (id_facture, image, url) VALUES (@id, @imageInsert{k}, @url ) " ;
+                                 mySqlCommand.CommandType = CommandType.Text;
+                                 mySqlCommand.Parameters.AddWithValue("imageInsert" + k, bytes);
+                                 rangee = mySqlCommand.ExecuteNonQuery();
+                             }
+
+                             k += rangee;
                          }
                         
                      }
