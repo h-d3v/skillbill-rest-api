@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.Remoting.Messaging;
 using System.Diagnostics;
+using System.Web.UI.WebControls;
 
 namespace WebApplication2.DataProviders
 {
@@ -145,6 +146,139 @@ namespace WebApplication2.DataProviders
             Debug.WriteLine(nb);
             return nb == 1 ? true : false;
         }
+        
+         public Utilisateur  MettreAJour(Utilisateur utilisateurModifie)
+        {
+            if (utilisateurModifie.MotDePasse == null)
+            {
+                throw new EntityDataSourceValidationException("Le mot de passe est requis");
+            }
+          
+            
+            int nbRowsAffected = 1;
+            string CourrielBD = "";
+            SqlConnection con = new SqlConnection(CONNECTION_STRING);
+            SqlCommand sqlCommand = con.CreateCommand();
+            con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+            sqlCommand.Connection = con;
+            sqlCommand.Transaction = transaction;
+                
+            sqlCommand.CommandText = "select courriel from  utilisateurs  where id=@id AND mot_de_passe=@pwd";
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "id",
+                Value = utilisateurModifie.Id
+            });
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "pwd",
+                Value = utilisateurModifie.MotDePasse
+            });
+            DbDataReader dataReader = sqlCommand.ExecuteReader();
+            if (!dataReader.Read())
+            {
+                dataReader.Close();
+                transaction.Rollback();
+                con.Close();
+                throw new EntityDataSourceValidationException("Le mot de passe ne correspond pas");
+            }
+            else
+            {
+                CourrielBD = (string) dataReader["courriel"];
+            
+                dataReader.Close();
+            }
+
+            
+
+            if (utilisateurModifie.Courriel != null)
+            {
+                sqlCommand.CommandText = "update utilisateurs set courriel=@courriel where id=@id";
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Parameters.Add(new SqlParameter()
+                {
+                    DbType = DbType.String,
+                    ParameterName = "courriel",
+                    Value = utilisateurModifie.Courriel
+                });
+                try
+                {
+                    nbRowsAffected *= sqlCommand.ExecuteNonQuery();
+                    CourrielBD = utilisateurModifie.Courriel;
+                }
+                catch (SqlException e)
+                {
+                    Console.WriteLine(e.Number);
+                    transaction.Rollback();
+                    con.Close();
+                    throw e;
+                }
+
+
+
+            }
+            if (utilisateurModifie.Monnaie != null)
+            {
+                sqlCommand.CommandText = "update utilisateurs set monnaie=@monnaie where id=@id";
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Parameters.Add(new SqlParameter()
+                {
+                    DbType = DbType.String,
+                    ParameterName = "monnaie",
+                    Value = utilisateurModifie.Monnaie
+                });
+                nbRowsAffected*= sqlCommand.ExecuteNonQuery();
+            }
+            if (utilisateurModifie.MotDePasseMod != null)
+            {
+                sqlCommand.CommandText = "update utilisateurs set mot_de_passe=@motPasse where id=@id";
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Parameters.Add(new SqlParameter()
+                {
+                    DbType = DbType.String,
+                    ParameterName = "motPasse",
+                    Value = utilisateurModifie.MotDePasseMod
+                });
+                nbRowsAffected*= sqlCommand.ExecuteNonQuery();
+            }
+            else
+            {
+                utilisateurModifie.MotDePasseMod = utilisateurModifie.MotDePasse;
+            }
+            
+            if (utilisateurModifie.Nom != null)
+            {
+                sqlCommand.CommandText = "update utilisateurs set nom=@nom where id=@id";
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Parameters.Add(new SqlParameter()
+                {
+                    DbType = DbType.String,
+                    ParameterName = "nom",
+                    Value = utilisateurModifie.Nom
+                });
+                nbRowsAffected*= sqlCommand.ExecuteNonQuery();
+            }
+
+            if (nbRowsAffected != 0)
+            {
+                transaction.Commit();
+                con.Close();
+                return SeConnecter(CourrielBD, utilisateurModifie.MotDePasseMod);
+            }
+            else
+            {
+                transaction.Rollback();
+                con.Close();
+                return null;
+            }
+            
+        }
+        
+        
 
         //todo retourner le nouvel utilisateur si la modification a faite, sinon retour null
         public Utilisateur  MettreAJours(Utilisateur utilisateurModifie)

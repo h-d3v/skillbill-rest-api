@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace WebApplication2.Entites
 {
@@ -18,6 +19,11 @@ namespace WebApplication2.Entites
         [DataMember]
         public string MotDePasse { get; set; }
 
+        [DataMember]
+        public string MotDePasseMod { get; set; }
+
+        
+        
         protected bool Equals(Utilisateur other)
         {
             return Id == other.Id;

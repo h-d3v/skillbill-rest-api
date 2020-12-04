@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.UI.WebControls;
 using WebApplication2.DataProviders;
 using WebApplication2.Entites;
 
@@ -49,10 +51,42 @@ namespace WebApplication2.Controllers
         {
         }
 
-        // DELETE api/values/5
-        public void Delete(int id)
+        [Route("api/utilisateurs/modifier/{id}")]
+        [HttpPut]
+        [ResponseType(typeof(Utilisateur))]
+        public HttpResponseMessage ModifierUnParametre([FromUri] int id, [FromBody] Utilisateur user)
         {
+
+            try
+            {
+                user.Id = id;
+                UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
+                Utilisateur utilisateurModif = dataProvider.MettreAJour(user);
+                return Request.CreateResponse(HttpStatusCode.OK, utilisateurModif);
+            }
+            catch (EntityDataSourceValidationException e)
+            {
+                if (e.Message.Equals("Le mot de passe ne correspond pas"))
+                    return Request.CreateResponse(HttpStatusCode.Unauthorized);
+                if (e.Message.Equals("Le mot de passe est requis"))
+                    return Request.CreateResponse(HttpStatusCode.Forbidden);
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627) //unique constraint Key du Courriel
+                    return new HttpResponseMessage(HttpStatusCode.Conflict);
+            }
+
+
+            return new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+
+
+            //retourne un 409 si l'email de l'utilisateur est deja pris
+            // return utilisateurModif!=null ? Request.CreateResponse(HttpStatusCode.OK, utilisateurModif) : Request.CreateResponse(HttpStatusCode.Conflict, utilisateurModif);
         }
+        
+        
 
 
         //cette methode retourne l'utilisateur modifier si la modification est reussie

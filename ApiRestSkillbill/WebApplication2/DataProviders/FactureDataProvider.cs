@@ -13,6 +13,7 @@ namespace WebApplication2.DataProviders
         public bool EnregistrerFacture(Facture facture)
         {
             if (facture == null) return false;
+            if (facture.PayeursEtMontant == null || facture.PayeursEtMontant.Count == 0) return false;
             
                 SqlConnection con =   new SqlConnection(CONNECTION_STRING);
                 con.Open();

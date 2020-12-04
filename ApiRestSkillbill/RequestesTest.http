@@ -6,16 +6,30 @@ Content-Type: application/xml
 
 
 ###
-POST http://localhost:8080/api/register
+PUT http://localhost:8080/api/utilisateurs/modifier/10
 Content-Type: application/json
 
 {
-  "Nom": "alslfdlflf",
-
-  "Courriel": "ahhafda@aaa.com",
-
-  "MotDePasse": "sdhdfhdhd"
+  "Nom": "julien j",
+  "Courriel": "jj@jde.com",
+  "Monnaie": "CAD",
+  "MotDePasse": "julien1234"
+ 
+  
 }
+
+###
+
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  
+  "Courriel": "jj@jde.com",
+
+  "MotDePasse": ""
+}
+
 
 ###
 
