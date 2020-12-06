@@ -16,6 +16,7 @@ CREATE TABLE Utilisateurs (
                               id int Identity(1,1) Primary Key ,
                               mot_de_passe varchar(255) NOT NULL,
                               monnaie varchar(255) default 'CAD'
+                              Api_key char(128) 
 );
 
 
@@ -64,15 +65,15 @@ CREATE TABLE utilisateur_facture (
                                      constraint facture_utilisateur foreign key (id_facture) references facture(id)
 );
 
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Quinta', 'Rosina', 'qrosinac@nationalgeographic.com', 'pQP5W1SGmB');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Glenda', 'Cessford', 'gcessfordd@walmart.com', 'IsaKs0w3');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Heddi', 'Craggs', 'hcraggse@mozilla.com', 'bsD9L5brqC');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tamqrah', 'Kos', 'tkosf@berkeley.edu', 's6zPXpq');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tanhya', 'Castellaccio', 'tcastellacciog@gizmodo.com', 'bMm0mL5Pw');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Cherri', 'Shuker', 'cshukerh@abc.net.au', 'mbOXfJmabv');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Magdalen', 'Fountian', 'mfountiani@reverbnation.com', 'AEtGjYXtuF3B');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Bernadette', 'Sercombe', 'bsercombej@chicagotribune.com', '6pvdClVQVGM');
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Weston', 'Graine', 'wgrainek@networkadvertising.org', 'miWkA7Bhx');
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Quinta', 'Rosina', 'qrosinac@nationalgeographic.com', 'pQP5W1SGmB', CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Glenda', 'Cessford', 'gcessfordd@walmart.com', 'IsaKs0w3' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Heddi', 'Craggs', 'hcraggse@mozilla.com', 'bsD9L5brqC' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tamqrah', 'Kos', 'tkosf@berkeley.edu', 's6zPXpq' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tanhya', 'Castellaccio', 'tcastellacciog@gizmodo.com', 'bMm0mL5Pw' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Cherri', 'Shuker', 'cshukerh@abc.net.au', 'mbOXfJmabv' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Magdalen', 'Fountian', 'mfountiani@reverbnation.com', 'AEtGjYXtuF3B' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Bernadette', 'Sercombe', 'bsercombej@chicagotribune.com', '6pvdClVQVGM' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Weston', 'Graine', 'wgrainek@networkadvertising.org', 'miWkA7Bhx' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
 
 
 DROP PROCEDURE IF EXISTS dbo.INSERT_utilisateur;  
@@ -82,15 +83,18 @@ CREATE PROCEDURE INSERT_utilisateur @Nom varchar(250), @Courriel varchar(250), @
 AS
 
 INSERT INTO [Utilisateurs]
-           ([nom]
-           ,[courriel]
-           ,[mot_de_passe]
-           ,[monnaie])
-     VALUES
-           (@Nom
-           ,@Courriel
-           ,@MotPasse
-           ,@Monnaie)
+        ([nom]
+        ,[courriel]
+        ,[mot_de_passe]
+        ,[monnaie]
+     ,[Api_key]
+    )
+    VALUES
+        (@Nom
+        ,@Courriel
+        ,@MotPasse
+        ,@Monnaie
+        , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2) )
 GO
 
 --Exemple d'utilisation de la procedure stockee
