@@ -21,6 +21,9 @@ namespace WebApplication2.Entites
 
         [DataMember]
         public string MotDePasseMod { get; set; }
+        
+        [DataMember]
+        public string ApiKey { get; set; }
 
         
         

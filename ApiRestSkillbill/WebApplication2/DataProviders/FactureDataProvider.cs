@@ -62,7 +62,7 @@ namespace WebApplication2.DataProviders
 
 
                     if (facture.Photos != null || facture.Photos.Count>0)
-                    { //TODO
+                    { //TODO rollback pour les photos
                         int k = 0;
                         mySqlCommand.Parameters.AddWithValue("url", "non implémenté");
                         foreach (var photo in facture.Photos)
@@ -96,7 +96,7 @@ namespace WebApplication2.DataProviders
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();   
-            mySqlCommand.CommandText = "select id, groupe, utilisateur_createur, date_facture, montant_total, nom, id_utilisateur, montant_paye from facture join utilisateur_facture uf on facture.id = uf.id_facture where groupe=@groupe ORDER BY id_facture";
+            mySqlCommand.CommandText = "select facture.id , groupe, utilisateur_createur, date_facture, montant_total, nom, id_utilisateur, montant_paye, p.id as photo_id  from facture join utilisateur_facture uf on facture.id = uf.id_facture left join photo p on facture.id = p.id_facture where groupe =@groupe order by facture.id";
             mySqlCommand.CommandType = CommandType.Text;
             mySqlCommand.Parameters.AddWithValue("groupe", idGroupe);
             DbDataReader dataReader = mySqlCommand.ExecuteReader();
@@ -133,6 +133,9 @@ namespace WebApplication2.DataProviders
                         UtilisateurId = (int) dataReader["id_utilisateur"],
                         MontantPaye = Convert.ToSingle( dataReader["montant_paye"])
                     });
+                    facture.Photos = new List<Photo>(); //On va prendre une seule photo pour le moment TODO refactor et utiliser unSet et non une liste
+                    int id = dataReader["photo_id"] as int? ?? 0;
+                    if(id!=0) facture.Photos.Add(new Photo(){Id = id});
                 }
                 else
                 {

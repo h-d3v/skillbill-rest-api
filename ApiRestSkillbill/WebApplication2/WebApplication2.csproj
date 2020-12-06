@@ -202,6 +202,7 @@
     <Compile Include="DataProviders\FactureDataProvider.cs" />
     <Compile Include="DataProviders\GroupeDataProvider.cs" />
     <Compile Include="DataProviders\UtilisateurDataProvider.cs" />
+    <Compile Include="DataProviders\VerifierDroits.cs" />
     <Compile Include="Entites\Facture.cs" />
     <Compile Include="Entites\Groupe.cs" />
     <Compile Include="Entites\Photo.cs" />

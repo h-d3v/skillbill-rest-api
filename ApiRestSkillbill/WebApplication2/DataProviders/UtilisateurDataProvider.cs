@@ -21,7 +21,7 @@ namespace WebApplication2.DataProviders
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
             SqlCommand mySqlCommand = con.CreateCommand();
-            mySqlCommand.CommandText = "select nom,prenom,courriel,id,monnaie from Utilisateurs where courriel=@courriel AND mot_de_passe =@motPasse";
+            mySqlCommand.CommandText = "select nom,prenom,courriel,id,monnaie, Api_key from Utilisateurs where courriel=@courriel AND mot_de_passe =@motPasse";
             mySqlCommand.CommandType = CommandType.Text;
             mySqlCommand.Parameters.Add(new SqlParameter()
             {
@@ -48,6 +48,7 @@ namespace WebApplication2.DataProviders
                 utilisateur.Courriel = (String) dataReader["courriel"];
                 utilisateur.Id = (int) dataReader["id"];
                 utilisateur.Monnaie = (String)dataReader["monnaie"];
+                utilisateur.ApiKey = (string) dataReader["Api_key"];
             }
             dataReader.Close();
             con.Close();

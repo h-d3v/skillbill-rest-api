@@ -3,8 +3,6 @@
 POST https://localhost:44301/api/utilisateurs/6/groupes?monnaie=0&nom=testegdfgf
 Content-Type: application/xml
 
-
-
 ###
 PUT http://localhost:8080/api/utilisateurs/modifier/10
 Content-Type: application/json
@@ -14,7 +12,6 @@ Content-Type: application/json
   "Courriel": "jj@jde.com",
   "Monnaie": "CAD",
   "MotDePasse": "julien1234"
- 
   
 }
 
@@ -67,8 +64,35 @@ POST https://localhost:44301/api/groupes/1?idUtilisateur=2
 ###
 GET https://skillbillweb.azurewebsites.net/api/utilisateurs
 
+###
+GET http://192.168.0.23:44302/api/utilisateurs/0/groupes/6
 
 ###
+
+GET http://localhost:8080/api/utilisateurs/10/groupes/7
+api-key : E422CD9758E1EC2CB8C0B73DB8F993DBE68037CF2832D68C2C483507DF6984332B381361EF5C8B4A3A2089B405042767C63398F37FD34BEE31D0058296B34B40
+
+###
+POST http://localhost:8080/api/factures
+api-key : E422CD9758E1EC2CB8C0B73DB8F993DBE68037CF2832D68C2C483507DF6984332B381361EF5C8B4A3A2089B405042767C63398F37FD34BEE31D0058296B34B40
+Content-Type: application/json
+
+{
+  "PayeursEtMontant": [
+    {
+      "UtilisateurId": 10,
+      "MontantPaye": 2.1
+    }
+  ],
+  "UtilisateurCreateurId": 10,
+  "DateCreation": "2020-01-01",
+  "MontantTotal": 2.1,
+  "Nom": "sample string 5",
+  "IdGroupe": 7
+}
+
+###
+
 POST  http://localhost:8080//api/factures
 Content-Type: application/json
 Accept: application/xml

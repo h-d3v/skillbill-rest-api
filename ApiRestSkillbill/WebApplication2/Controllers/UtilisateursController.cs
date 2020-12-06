@@ -17,68 +17,111 @@ namespace WebApplication2.Controllers
     {
         // GET api/values
         public List<Utilisateur> Get()
-        {
+        {// a suprimer juste pour visualiser les utilisateurs lors du debugage
             UtilisateurDataProvider utilisateurDataProvider = new UtilisateurDataProvider();
             return utilisateurDataProvider.TrouverTous();
         }
 
    
         [Route("api/utilisateurs/{id}/groupes/{idGroupe}")]
-        public Groupe Get(int id, int idGroupe)
+        [ResponseType(typeof(Groupe))]
+        public HttpResponseMessage Get(int id, int idGroupe)
         {
-            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-            return groupeDataProvider.TrouverGroupeAvecMembresParID(idGroupe);
+            
+            var request = Request;
+            var header = Request.Headers;
+            if (header.Contains("api-key"))
+            {
+                if (VerifierDroits.VerifierAccesUserGroupeUtilisateur(idGroupe,header.GetValues("api-key").First()))
+                {
+                    GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+                    return Request.CreateResponse(HttpStatusCode.OK, groupeDataProvider.TrouverGroupeAvecMembresParID(idGroupe));
+                }
+
+            }
+
+            return Request.CreateResponse(HttpStatusCode.Unauthorized); 
+           
         }
 
         [Route("api/utilisateurs/{id}/groupes")]
-        public List<Groupe> Get(int id)
+        [ResponseType(typeof( List<Groupe>))]
+        public HttpResponseMessage Get(int id)
         {
-            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-            return groupeDataProvider.TrouverGroupesParUtilisateur(id);
+            var request = Request;
+            var header = Request.Headers;
+            if (header.Contains("api-key"))
+            {
+                if (VerifierDroits.VerifierAccesUtilisateur(header.GetValues("api-key").First(), id))
+                {
+                    GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+                    return Request.CreateResponse(HttpStatusCode.OK, groupeDataProvider.TrouverGroupesParUtilisateur(id));
+                }
+
+            }
+
+            return Request.CreateResponse(HttpStatusCode.Unauthorized); 
+            
+          
         }
 
 
         // POST créer un groupe
-        [Route("api/utilisateurs/{id}/groupes")]
-        public Groupe Post([FromUri] int id, [FromBody] Groupe groupe)
+        [Route("api/utilisateurs/{id}/groupes")] [ResponseType((typeof(Groupe)))]
+        public HttpResponseMessage Post([FromUri] int id, [FromBody] Groupe groupe)
         {
-            GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-            return groupeDataProvider.CreerGroupe(groupe.Nom, id, groupe.Monnaie);
+            var request = Request;
+            var header = Request.Headers;
+            if (header.Contains("api-key"))
+            {
+                if (VerifierDroits.VerifierAccesUtilisateur(header.GetValues("api-key").First(), id))
+                {
+                    GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+                    return Request.CreateResponse(HttpStatusCode.OK, groupeDataProvider.CreerGroupe(groupe.Nom, id, groupe.Monnaie));
+                }
+            }
+            
+            return Request.CreateResponse(HttpStatusCode.Unauthorized);  ;
         }
 
-        // PUT api/values/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+     
 
         [Route("api/utilisateurs/modifier/{id}")]
         [HttpPut]
         [ResponseType(typeof(Utilisateur))]
         public HttpResponseMessage ModifierUnParametre([FromUri] int id, [FromBody] Utilisateur user)
         {
-
-            try
+            var request = Request;
+            var header = Request.Headers;
+            if (header.Contains("api-key"))
             {
-                user.Id = id;
-                UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
-                Utilisateur utilisateurModif = dataProvider.MettreAJour(user);
-                return Request.CreateResponse(HttpStatusCode.OK, utilisateurModif);
+                if (VerifierDroits.VerifierAccesUtilisateur(header.GetValues("api-key").First(), id))
+                {
+                    GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
+                    
+                    try
+                    {
+                        user.Id = id;
+                        UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
+                        Utilisateur utilisateurModif = dataProvider.MettreAJour(user);
+                        return Request.CreateResponse(HttpStatusCode.OK, utilisateurModif);
+                    }
+                    catch (EntityDataSourceValidationException e)
+                    {
+                        if (e.Message.Equals("Le mot de passe ne correspond pas"))
+                            return Request.CreateResponse(HttpStatusCode.Forbidden);
+                        if (e.Message.Equals("Le mot de passe est requis"))
+                            return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    }
+                    catch (SqlException e)
+                    {
+                        if (e.Number == 2627) //unique constraint Key du Courriel
+                            return new HttpResponseMessage(HttpStatusCode.Conflict);
+                    }
+                }
             }
-            catch (EntityDataSourceValidationException e)
-            {
-                if (e.Message.Equals("Le mot de passe ne correspond pas"))
-                    return Request.CreateResponse(HttpStatusCode.Unauthorized);
-                if (e.Message.Equals("Le mot de passe est requis"))
-                    return Request.CreateResponse(HttpStatusCode.Forbidden);
-            }
-            catch (SqlException e)
-            {
-                if (e.Number == 2627) //unique constraint Key du Courriel
-                    return new HttpResponseMessage(HttpStatusCode.Conflict);
-            }
-
-
-            return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            
+            return Request.CreateResponse(HttpStatusCode.Unauthorized); 
 
 
 
