@@ -1,3 +1,5 @@
+--NB: les tables avec des nouveaux champs doivent etres crees avant d'y inserer des donnes
+--les deux commandes ne peuvent pas etres executees en meme temps.
 DROP TABLE if exists utilisateur_groupe;
 DROP TABLE if exists utilisateur_facture;
 DROP TABLE if exists photo;
@@ -9,14 +11,13 @@ DROP TABLE if exists Utilisateurs;
 
 
 CREATE TABLE Utilisateurs (
-
                               nom VARCHAR(255) NOT NULL,
                               prenom varchar(255),
                               courriel varchar(255) NOT NULL UNIQUE,
                               id int Identity(1,1) Primary Key ,
                               mot_de_passe varchar(255) NOT NULL,
-                              monnaie varchar(255) default 'CAD'
-                              Api_key char(128) 
+                              monnaie varchar(255) default 'CAD',
+                              api_key char(128) NOT NULL
 );
 
 
@@ -65,15 +66,15 @@ CREATE TABLE utilisateur_facture (
                                      constraint facture_utilisateur foreign key (id_facture) references facture(id)
 );
 
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Quinta', 'Rosina', 'qrosinac@nationalgeographic.com', 'pQP5W1SGmB', CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Glenda', 'Cessford', 'gcessfordd@walmart.com', 'IsaKs0w3' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Heddi', 'Craggs', 'hcraggse@mozilla.com', 'bsD9L5brqC' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tamqrah', 'Kos', 'tkosf@berkeley.edu', 's6zPXpq' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Tanhya', 'Castellaccio', 'tcastellacciog@gizmodo.com', 'bMm0mL5Pw' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Cherri', 'Shuker', 'cshukerh@abc.net.au', 'mbOXfJmabv' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Magdalen', 'Fountian', 'mfountiani@reverbnation.com', 'AEtGjYXtuF3B' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Bernadette', 'Sercombe', 'bsercombej@chicagotribune.com', '6pvdClVQVGM' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
-insert into Utilisateurs (prenom, nom, courriel, mot_de_passe) values ('Weston', 'Graine', 'wgrainek@networkadvertising.org', 'miWkA7Bhx' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Quinta', 'Rosina', 'qrosinac@nationalgeographic.com', 'pQP5W1SGmB', CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Glenda', 'Cessford', 'gcessfordd@walmart.com', 'IsaKs0w3' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Heddi', 'Craggs', 'hcraggse@mozilla.com', 'bsD9L5brqC' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Tamqrah', 'Kos', 'tkosf@berkeley.edu', 's6zPXpq' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Tanhya', 'Castellaccio', 'tcastellacciog@gizmodo.com', 'bMm0mL5Pw' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Cherri', 'Shuker', 'cshukerh@abc.net.au', 'mbOXfJmabv' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Magdalen', 'Fountian', 'mfountiani@reverbnation.com', 'AEtGjYXtuF3B' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Bernadette', 'Sercombe', 'bsercombej@chicagotribune.com', '6pvdClVQVGM' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
+insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Weston', 'Graine', 'wgrainek@networkadvertising.org', 'miWkA7Bhx' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
 
 
 DROP PROCEDURE IF EXISTS dbo.INSERT_utilisateur;  
@@ -105,10 +106,10 @@ GO
 GO**/
 
 
-CREATE PROCEDURE Count_email  @Courriel varchar(250)
-AS
+--CREATE PROCEDURE Count_email  @Courriel varchar(250)
+--AS
 
-SELECT COUNT(0) FROM [Utilisateurs] WHERE courriel=@Courriel
+--SELECT COUNT(0) FROM [Utilisateurs] WHERE courriel=@Courriel
          
 GO
 
