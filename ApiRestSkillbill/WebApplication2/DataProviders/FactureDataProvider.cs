@@ -9,7 +9,7 @@ namespace WebApplication2.DataProviders
 {
     public class FactureDataProvider
     {
-        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public bool EnregistrerFacture(Facture facture)
         {
             if (facture == null) return false;
@@ -61,7 +61,7 @@ namespace WebApplication2.DataProviders
 
 
 
-                    if (facture.Photos != null || facture.Photos.Count>0)
+                    if (facture.Photos != null && facture.Photos.Count>0)
                     { //TODO rollback pour les photos
                         int k = 0;
                         mySqlCommand.Parameters.AddWithValue("url", "non implémenté");

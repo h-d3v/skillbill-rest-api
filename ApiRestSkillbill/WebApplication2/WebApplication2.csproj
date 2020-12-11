@@ -197,6 +197,7 @@
     <Compile Include="Controllers\GroupesController.cs" />
     <Compile Include="Controllers\Home.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\UtilisateursController.cs" />
     <Compile Include="DataProviders\FactureDataProvider.cs" />
