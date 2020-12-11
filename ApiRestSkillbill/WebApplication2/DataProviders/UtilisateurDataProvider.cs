@@ -281,12 +281,52 @@ namespace WebApplication2.DataProviders
         
         
 
-        //todo retourner le nouvel utilisateur si la modification a faite, sinon retour null
+        /// <summary>
+        /// modifie un utilsateur, a ete faite pour l'appli android
+        /// </summary>
+        /// <param name="utilisateurModifie"></param>
+        /// <returns>Null si l'email est deja pris, lance une exception si l'utilisateur n'a pas le bon mdp,
+        /// retourne l'utilisateur tel que modifier si la modif est reussie</returns>
+        //fusionner avec celle d'app web pour une meilleure gestion de code.
         public Utilisateur  MettreAJours(Utilisateur utilisateurModifie)
         {
+
             int nbRowsAffected;
             SqlConnection con = new SqlConnection(CONNECTION_STRING);
             SqlCommand sqlCommand = con.CreateCommand();
+            con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+            sqlCommand.Connection = con;
+            sqlCommand.Transaction = transaction;
+
+            ////////partie qui va verifier si le mot de passe coresspond a celui de l'utilisateur
+            sqlCommand.CommandText = "select courriel from  utilisateurs  where id=@id AND mot_de_passe=@pwd";
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "id",
+                Value = utilisateurModifie.Id
+            });
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "pwd",
+                Value = utilisateurModifie.MotDePasse
+            });
+            DbDataReader dataReader = sqlCommand.ExecuteReader();
+            if (!dataReader.Read())
+            {
+                dataReader.Close();
+                transaction.Rollback();
+                throw new EntityDataSourceValidationException("Le mot de passe ne correspond pas");
+            }
+           
+            con.Close();
+            sqlCommand = con.CreateCommand();
+
+
+            ////////partie modification de l'utilisateur
             sqlCommand.CommandText = "update utilisateurs set nom=@nom,courriel=@courriel,monnaie=@monnaie,mot_de_passe=@motPasse where id=@id";
             sqlCommand.CommandType = CommandType.Text;
             sqlCommand.Parameters.Add(new SqlParameter()
@@ -296,11 +336,17 @@ namespace WebApplication2.DataProviders
                 Value = utilisateurModifie.Courriel
             });
 
-            sqlCommand.Parameters.Add(new SqlParameter()
+            if (utilisateurModifie.MotDePasseMod != null && utilisateurModifie.MotDePasseMod != "")
+            {
+                utilisateurModifie.MotDePasse = utilisateurModifie.MotDePasseMod;
+            }
+
+        sqlCommand.Parameters.Add(new SqlParameter()
             {
                 DbType = DbType.String,
                 ParameterName = "motPasse",
                 Value = utilisateurModifie.MotDePasse
+                 
             });
 
             sqlCommand.Parameters.Add(new SqlParameter()
