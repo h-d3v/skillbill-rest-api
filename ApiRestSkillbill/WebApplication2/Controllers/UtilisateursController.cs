@@ -132,25 +132,48 @@ namespace WebApplication2.Controllers
         
 
 
-        //cette methode retourne l'utilisateur modifier si la modification est reussie
+        //cette methode retourne l'utilisateur modifier(sans le mdp) si la modification est reussie
         [Route("api/utilisateurs/update/{id}")]
         [HttpPut]
         [ResponseType(typeof(Utilisateur))]
         public HttpResponseMessage Put([FromUri] int id, [FromBody] Utilisateur user)
         {
+            var request = Request;
+            var header = Request.Headers;
             //todo valider avec des regex
+            //if (header.Contains("api-key"))
+            //{
+            //    if (VerifierDroits.VerifierAccesUtilisateur(header.GetValues("api-key").First(), id))
+            //    {
             if (user == null || user.Courriel == null || user.Nom == null ||
                 user.MotDePasse == null || user.Monnaie == null)
             {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
-        
+
             user.Id = id;
             UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
-            Utilisateur utilisateurModif= dataProvider.MettreAJours(user);
-           
-            //retourne un 409 si l'email de l'utilisateur est deja pris
-            return utilisateurModif!=null ? Request.CreateResponse(HttpStatusCode.OK, utilisateurModif) : Request.CreateResponse(HttpStatusCode.Conflict, utilisateurModif);
+            try
+            {
+                Utilisateur utilisateurModif = dataProvider.MettreAJours(user);
+                //le dao retourne un null si l'email existe deja
+                if (utilisateurModif == null)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.Conflict);
+                }
+                    
+                return utilisateurModif != null ? Request.CreateResponse(HttpStatusCode.OK, utilisateurModif) : Request.CreateResponse(HttpStatusCode.Conflict, utilisateurModif);
+            }
+            catch (EntityDataSourceValidationException e) {
+                //retourne un 409 si l'email de l'utilisateur est deja pris
+                Debug.WriteLine(e.ToString());
+                return new HttpResponseMessage(HttpStatusCode.Forbidden);
+
+            }
+            //}
+            // }
+            // return Request.CreateResponse(HttpStatusCode.Unauthorized);
         }
+
     }
 }

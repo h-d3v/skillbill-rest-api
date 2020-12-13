@@ -14,7 +14,8 @@ namespace WebApplication2.DataProviders
 {
     public class UtilisateurDataProvider
     {
-        private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        //private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
@@ -280,11 +281,45 @@ namespace WebApplication2.DataProviders
         
 
         //todo retourner le nouvel utilisateur si la modification a faite, sinon retour null
-        public Utilisateur  MettreAJours(Utilisateur utilisateurModifie)
+            public Utilisateur  MettreAJours(Utilisateur utilisateurModifie)
         {
+
             int nbRowsAffected;
             SqlConnection con = new SqlConnection(CONNECTION_STRING);
             SqlCommand sqlCommand = con.CreateCommand();
+            con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+            sqlCommand.Connection = con;
+            sqlCommand.Transaction = transaction;
+
+            ////////partie qui va verifier si le mot de passe coresspond a celui de l'utilisateur
+            sqlCommand.CommandText = "select courriel from  utilisateurs  where id=@id AND mot_de_passe=@pwd";
+            sqlCommand.CommandType = CommandType.Text;
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.Int32,
+                ParameterName = "id",
+                Value = utilisateurModifie.Id
+            });
+            sqlCommand.Parameters.Add(new SqlParameter()
+            {
+                DbType = DbType.String,
+                ParameterName = "pwd",
+                Value = utilisateurModifie.MotDePasse
+            });
+            DbDataReader dataReader = sqlCommand.ExecuteReader();
+            if (!dataReader.Read())
+            {
+                dataReader.Close();
+                transaction.Rollback();
+                throw new EntityDataSourceValidationException("Le mot de passe ne correspond pas");
+            }
+           
+            con.Close();
+            sqlCommand = con.CreateCommand();
+
+
+            ////////partie modification de l'utilisateur
             sqlCommand.CommandText = "update utilisateurs set nom=@nom,courriel=@courriel,monnaie=@monnaie,mot_de_passe=@motPasse where id=@id";
             sqlCommand.CommandType = CommandType.Text;
             sqlCommand.Parameters.Add(new SqlParameter()
@@ -294,11 +329,16 @@ namespace WebApplication2.DataProviders
                 Value = utilisateurModifie.Courriel
             });
 
+            if (utilisateurModifie.MotDePasseMod != null && utilisateurModifie.MotDePasseMod != "")
+            {
+                utilisateurModifie.MotDePasse = utilisateurModifie.MotDePasseMod;
+            }
             sqlCommand.Parameters.Add(new SqlParameter()
             {
                 DbType = DbType.String,
                 ParameterName = "motPasse",
                 Value = utilisateurModifie.MotDePasse
+                 
             });
 
             sqlCommand.Parameters.Add(new SqlParameter()
@@ -338,4 +378,5 @@ namespace WebApplication2.DataProviders
             return nbRowsAffected == 1 ? SeConnecter(utilisateurModifie.Courriel, utilisateurModifie.MotDePasse) : null;
         }
     }
+
 }

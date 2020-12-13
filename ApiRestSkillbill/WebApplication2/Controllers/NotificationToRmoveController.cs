@@ -6,7 +6,7 @@ using WebApplication2.Entites;
 
 namespace WebApplication2.Controllers
 {
-    public class NotificationController : ApiController
+    public class NotificationToRmoveController : ApiController
     {
         // GET
         public List<Groupe> Get(int id)
