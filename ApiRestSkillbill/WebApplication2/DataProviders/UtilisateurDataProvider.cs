@@ -58,6 +58,9 @@ namespace WebApplication2.DataProviders
         }
 
 
+        /*
+         * Pour tests uniquement devra etre supprimé ou modifiér lors du Release TODO
+         */
         public List<Utilisateur> TrouverTous()
         {
             List<Utilisateur> utilisateurs = new List<Utilisateur>();

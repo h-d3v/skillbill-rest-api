@@ -86,5 +86,20 @@ namespace WebApplication2.Controllers
             FactureDataProvider factureDataProvider = new FactureDataProvider();
             return factureDataProvider.TrouverPhotoParId(id);
         }
+
+        [ResponseType(typeof(bool))]
+        public HttpResponseMessage Delete([FromUri] int id)
+        {
+            var header = Request.Headers;
+            if (header.Contains("api-key"))
+            {
+                if (VerifierDroits.VerifierAccesFacture(header.GetValues("api-key").First(), id))
+                {
+                    FactureDataProvider factureDataProvider = new FactureDataProvider();
+                    return Request.CreateResponse(HttpStatusCode.OK, factureDataProvider.SupprimerFacture(id));
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.Unauthorized); 
+        }
     }
 }

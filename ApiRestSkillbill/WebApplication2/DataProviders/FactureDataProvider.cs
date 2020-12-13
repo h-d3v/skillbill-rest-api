@@ -430,5 +430,24 @@ namespace WebApplication2.DataProviders
             con.Close();
             return facture;
         }
+
+        public bool SupprimerFacture(int factureId)
+        {
+            using (var con = new SqlConnection(CONNECTION_STRING))
+            {//TODO transaction
+                con.Open();
+                SqlCommand mySqlCommand = con.CreateCommand();
+                mySqlCommand.CommandText = "delete  from utilisateur_facture where id_facture=@id";
+                mySqlCommand.CommandType = CommandType.Text;
+                mySqlCommand.Parameters.AddWithValue("id", factureId);
+                mySqlCommand.ExecuteNonQuery();
+                mySqlCommand.CommandText = "delete  from photo where id_facture=@id";
+                mySqlCommand.ExecuteNonQuery();
+                mySqlCommand.CommandText = "delete  from facture where facture.id=@id";
+                int row = mySqlCommand.ExecuteNonQuery();
+                return row > 0;
+
+            }
+        }
     }
 }
