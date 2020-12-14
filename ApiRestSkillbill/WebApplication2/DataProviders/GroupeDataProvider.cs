@@ -109,7 +109,7 @@ namespace WebApplication2.DataProviders
                 ParameterName = "g",
                 Value = idGroupe
             });
-            int i =  mySqlCommand.ExecuteNonQuery();
+            int i = mySqlCommand.ExecuteNonQuery();
             con.Close();
             return i == 1;
         }
