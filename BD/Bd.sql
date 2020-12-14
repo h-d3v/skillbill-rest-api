@@ -6,6 +6,8 @@ DROP TABLE if exists photo;
 DROP TABLE if exists facture;
 DROP TABLE if exists Groupes;
 DROP TABLE if exists Utilisateurs;
+DROP table if exists message_utilisateur;
+DROP table if exists message;
 
 
 
@@ -65,6 +67,20 @@ CREATE TABLE utilisateur_facture (
                                      constraint utilisateur_facture_fk foreign key (id_utilisateur) references Utilisateurs(id),
                                      constraint facture_utilisateur foreign key (id_facture) references facture(id)
 );
+
+
+CREATE table message (
+	id int IDENTITY(1,1) Primary key,
+	Typemessage VARCHAR(255),
+	MsgJSON TEXT
+);
+CREATE TABLE message_utilisateur(
+	 id_message int NOT NULL,
+	 id_utilisateur int NOT NULL,
+	 PRIMARY KEY (id_message, id_utilisateur),
+	 constraint fk_id_message foreign key(id_message) references message(id),
+	 constraint fk_id_utilisateur foreign key(id_utilisateur) references Utilisateurs(id)
+	);
 
 insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Quinta', 'Rosina', 'qrosinac@nationalgeographic.com', 'pQP5W1SGmB', CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));
 insert into Utilisateurs (prenom, nom, courriel, mot_de_passe, api_key) values ('Glenda', 'Cessford', 'gcessfordd@walmart.com', 'IsaKs0w3' , CONVERT(Char(128), CRYPT_GEN_RANDOM(128),2));

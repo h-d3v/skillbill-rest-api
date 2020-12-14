@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -41,7 +42,21 @@ namespace WebApplication2.Controllers
                 if (VerifierDroits.VerifierAccesUserGroupeUtilisateur(id, header.GetValues("api-key").First()))
                 {
                     GroupeDataProvider groupeDataProvider = new GroupeDataProvider();
-                    return Request.CreateResponse(HttpStatusCode.OK, groupeDataProvider.AjouterMembre(courriel, id));
+                    try
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK,
+                            groupeDataProvider.AjouterMembre(courriel, id));
+                    }
+                    catch (SqlException e)
+                    {
+                        if (e.Number == 2627)//Violation of PRIMARY KEY constraint car l'utilisateur est déja dans le groupê
+                        {
+                            return Request.CreateResponse(HttpStatusCode.Conflict);
+                        } 
+                    }
+
+
+
                 }
             }
             return Request.CreateResponse(HttpStatusCode.Unauthorized); 

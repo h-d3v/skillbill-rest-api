@@ -7,7 +7,8 @@ namespace WebApplication2.DataProviders
 {
     public static class VerifierDroits
     {
-        private static readonly  string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        private static readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        //private static readonly  string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public static bool VerifierAccesUserGroupeUtilisateur(int idGroupe, string api_key)
         {
             using (SqlConnection sqlConnection = new SqlConnection(CONNECTION_STRING))

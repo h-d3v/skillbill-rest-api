@@ -15,6 +15,7 @@ namespace WebApplication2.DataProviders
     public class UtilisateurDataProvider
     {
         private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        //private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public Utilisateur SeConnecter(string courriel, string motPasse)
         {
             Utilisateur utilisateur = null;
@@ -57,6 +58,9 @@ namespace WebApplication2.DataProviders
         }
 
 
+        /*
+         * Pour tests uniquement devra etre supprimé ou modifiér lors du Release TODO
+         */
         public List<Utilisateur> TrouverTous()
         {
             List<Utilisateur> utilisateurs = new List<Utilisateur>();
@@ -78,8 +82,6 @@ namespace WebApplication2.DataProviders
                     Courriel =  (String) dataReader["courriel"],
                     Id =  (int) dataReader["id"],
                     Monnaie = (string) dataReader["monnaie"]
-                    
-                    
                 };
                utilisateurs.Add(utilisateur);
             }
@@ -340,8 +342,7 @@ namespace WebApplication2.DataProviders
             {
                 utilisateurModifie.MotDePasse = utilisateurModifie.MotDePasseMod;
             }
-
-        sqlCommand.Parameters.Add(new SqlParameter()
+            sqlCommand.Parameters.Add(new SqlParameter()
             {
                 DbType = DbType.String,
                 ParameterName = "motPasse",
@@ -386,4 +387,5 @@ namespace WebApplication2.DataProviders
             return nbRowsAffected == 1 ? SeConnecter(utilisateurModifie.Courriel, utilisateurModifie.MotDePasse) : null;
         }
     }
+
 }

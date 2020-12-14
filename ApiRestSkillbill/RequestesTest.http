@@ -41,7 +41,8 @@ POST http://192.168.0.23:44302/api/login
 Content-Type: application/json
 
 {"Courriel":"jj@jde.com","MotDePasse":"julien123"}
-
+###
+POST  http://192.168.0.23:44302/api/groupes/1?courriel=tamerelapute 
 
 ###
 POST http://localhost:8080/api/utilisateurs/10/groupes?nom=nouveau&monnaie=0
@@ -68,6 +69,15 @@ GET https://skillbillweb.azurewebsites.net/api/utilisateurs
 GET http://192.168.0.23:44302/api/utilisateurs/0/groupes/6
 
 ###
+POST  http://192.168.0.23:44302/api/groupes/1?courriel=jj@
+
+###
+
+GET http://localhost:8080/api/utilisateurs/47/groupes
+api-key : 9B2F2CB7DBC5E1955A58AF2D7BD99652EC38A730DCF38FDCECCFDAB504F3EFA89561508F5F67ED90A944CC1CAF701502C0E89B1B24239C21114E13814AAC4038
+###
+
+
 
 GET http://localhost:8080/api/utilisateurs/10/groupes/7
 api-key : E422CD9758E1EC2CB8C0B73DB8F993DBE68037CF2832D68C2C483507DF6984332B381361EF5C8B4A3A2089B405042767C63398F37FD34BEE31D0058296B34B40
@@ -76,6 +86,7 @@ api-key : E422CD9758E1EC2CB8C0B73DB8F993DBE68037CF2832D68C2C483507DF6984332B3813
 POST http://localhost:8080/api/factures
 api-key : E422CD9758E1EC2CB8C0B73DB8F993DBE68037CF2832D68C2C483507DF6984332B381361EF5C8B4A3A2089B405042767C63398F37FD34BEE31D0058296B34B40
 Content-Type: application/json
+
 
 {
   "PayeursEtMontant": [

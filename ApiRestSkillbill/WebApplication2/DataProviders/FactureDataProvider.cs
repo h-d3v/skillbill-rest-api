@@ -10,6 +10,7 @@ namespace WebApplication2.DataProviders
     public class FactureDataProvider
     {
         private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        //private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public bool EnregistrerFacture(Facture facture)
         {
             if (facture == null) return false;
@@ -61,7 +62,7 @@ namespace WebApplication2.DataProviders
 
 
 
-                    if (facture.Photos != null || facture.Photos.Count>0)
+                    if (facture.Photos != null && facture.Photos.Count>0)
                     { //TODO rollback pour les photos
                         int k = 0;
                         mySqlCommand.Parameters.AddWithValue("url", "non implémenté");
@@ -428,6 +429,25 @@ namespace WebApplication2.DataProviders
             
             con.Close();
             return facture;
+        }
+
+        public bool SupprimerFacture(int factureId)
+        {
+            using (var con = new SqlConnection(CONNECTION_STRING))
+            {//TODO transaction
+                con.Open();
+                SqlCommand mySqlCommand = con.CreateCommand();
+                mySqlCommand.CommandText = "delete  from utilisateur_facture where id_facture=@id";
+                mySqlCommand.CommandType = CommandType.Text;
+                mySqlCommand.Parameters.AddWithValue("id", factureId);
+                mySqlCommand.ExecuteNonQuery();
+                mySqlCommand.CommandText = "delete  from photo where id_facture=@id";
+                mySqlCommand.ExecuteNonQuery();
+                mySqlCommand.CommandText = "delete  from facture where facture.id=@id";
+                int row = mySqlCommand.ExecuteNonQuery();
+                return row > 0;
+
+            }
         }
     }
 }

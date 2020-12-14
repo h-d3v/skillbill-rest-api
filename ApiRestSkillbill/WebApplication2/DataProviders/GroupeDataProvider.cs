@@ -10,8 +10,9 @@ namespace WebApplication2.DataProviders
     public class GroupeDataProvider
     {
         private readonly string CONNECTION_STRING = "Server=localhost\\SQLEXPRESS;Database=skillbill;Trusted_Connection=True";
+        //private readonly string CONNECTION_STRING = "Server=tcp:jdeinc.database.windows.net,1433;Initial Catalog=skillbilljde;Persist Security Info=False;User ID=tumbleweed;Password=lecithinedetournesole-471;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-        public Groupe CreerGroupe(string nom, int idUtilisateur, int Monnaie)
+        public Groupe CreerGroupe(string nom, int idUtilisateur, string Monnaie)
         {
             SqlConnection con =  new SqlConnection(CONNECTION_STRING);
             con.Open();
@@ -32,7 +33,7 @@ namespace WebApplication2.DataProviders
             });
             mySqlCommand.Parameters.Add(new SqlParameter()
             {
-                DbType = DbType.Int16,
+                DbType = DbType.String,
                 ParameterName = "monnaie",
                 Value = Monnaie
             });
@@ -108,7 +109,7 @@ namespace WebApplication2.DataProviders
                 ParameterName = "g",
                 Value = idGroupe
             });
-            int i =  mySqlCommand.ExecuteNonQuery();
+            int i = mySqlCommand.ExecuteNonQuery();
             con.Close();
             return i == 1;
         }
@@ -166,7 +167,7 @@ namespace WebApplication2.DataProviders
                     groupe= new Groupe()
                     {
                         Id = (int) dataReader["id_groupe"],
-                        Monnaie = (int) dataReader["monnaie"],
+                        Monnaie = (string) dataReader["monnaie"],
                         UtilisateurCreateur = new Utilisateur(){Id= (int) dataReader["utilisateur_createur"]},
                         DateCreation = ((DateTime) dataReader["date_creation"]).ToString(),
                         Nom = (string) dataReader["nom"],
@@ -210,6 +211,7 @@ namespace WebApplication2.DataProviders
                     groupe = new Groupe();
                     groupe.Id = (int) dataReader["id"];
                     groupe.Nom = (string) dataReader["nom"];
+                    groupe.Monnaie = (string) dataReader["monnaie"];
                     groupe.UtilisateurCreateur = new Utilisateur(){Id = (int) dataReader["utilisateur_createur"]}  ;
                     groupe.UtilisateursAbonnes= new List<Utilisateur>();
                     groupe.UtilisateursAbonnes.Add(new Utilisateur(){Id = (int) dataReader["id_utilisateur"]});

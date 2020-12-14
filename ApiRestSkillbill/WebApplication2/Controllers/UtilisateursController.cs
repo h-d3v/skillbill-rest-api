@@ -145,13 +145,13 @@ namespace WebApplication2.Controllers
             //{
             //    if (VerifierDroits.VerifierAccesUtilisateur(header.GetValues("api-key").First(), id))
             //    {
-                    if (user == null || user.Courriel == null || user.Nom == null ||
+            if (user == null || user.Courriel == null || user.Nom == null ||
                 user.MotDePasse == null || user.Monnaie == null)
-                    {
-                        return new HttpResponseMessage(HttpStatusCode.BadRequest);
-                    }
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
 
-                    user.Id = id;
+            user.Id = id;
             UtilisateurDataProvider dataProvider = new UtilisateurDataProvider();
             try
             {
@@ -162,7 +162,7 @@ namespace WebApplication2.Controllers
                     return new HttpResponseMessage(HttpStatusCode.Conflict);
                 }
                     
-                    return utilisateurModif != null ? Request.CreateResponse(HttpStatusCode.OK, utilisateurModif) : Request.CreateResponse(HttpStatusCode.Conflict, utilisateurModif);
+                return utilisateurModif != null ? Request.CreateResponse(HttpStatusCode.OK, utilisateurModif) : Request.CreateResponse(HttpStatusCode.Conflict, utilisateurModif);
             }
             catch (EntityDataSourceValidationException e) {
                 //retourne un 409 si l'email de l'utilisateur est deja pris
@@ -170,9 +170,10 @@ namespace WebApplication2.Controllers
                 return new HttpResponseMessage(HttpStatusCode.Forbidden);
 
             }
-                //}
-           // }
-           // return Request.CreateResponse(HttpStatusCode.Unauthorized);
+            //}
+            // }
+            // return Request.CreateResponse(HttpStatusCode.Unauthorized);
         }
+
     }
 }
